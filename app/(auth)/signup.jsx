@@ -1,19 +1,45 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
+import axiosClient from "../../Axios/AxiosClient";
 import AuthForm from "../../Components/Containers/AuthForm";
 import CustomInput from "../../Components/Tools/CustomInput";
 import PrimaryButton from "../../Components/Tools/PrimaryButton";
 import SecondaryButton from "../../Components/Tools/SecondaryButton";
+import { useMainContext } from "../../Contexts/MainContext";
+import { useUserContext } from "../../Contexts/UserContext";
 
 const signup = () => {
   const router = useRouter();
-
+  const { setUser } = useUserContext();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
+  const { setErrors } = useMainContext();
+
+  const signUp = async () => {
+    let data = {
+      name: name,
+      email: email,
+      password: password,
+      password_confirmation: passwordConf,
+    };
+
+    axiosClient
+      .post("/signup-mobile", data)
+      .then(({ data }) => {
+        setUser(data.user);
+        AsyncStorage.setItem("TOKEN", data.token);
+        router.replace("/pages/Home");
+      })
+      .catch((error) => {
+        setErrors([
+          error?.response?.data?.message || "Some Thing Wrong happened",
+        ]);
+      });
+  };
 
   const CheckForUser = async () => {
     let t = await AsyncStorage.getItem("TOKEN");
@@ -69,7 +95,7 @@ const signup = () => {
           >
             <Text className="text-gray-400 text-xl">Login</Text>
           </SecondaryButton>
-          <PrimaryButton classes="px-2 py-1 text-gray-300">
+          <PrimaryButton classes="px-2 py-1 text-gray-300" event={signUp}>
             <Text className="text-gray-400 text-xl">Sign Up</Text>
           </PrimaryButton>
         </View>

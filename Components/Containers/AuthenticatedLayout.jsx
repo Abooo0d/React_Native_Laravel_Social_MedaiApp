@@ -13,6 +13,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import axiosClient from "../../Axios/AxiosClient";
+import { useMainContext } from "../../Contexts/MainContext";
+import { useUserContext } from "../../Contexts/UserContext";
 import AuthMenu from "../Shared/AuthMenu";
 import FriendsForm from "../Shared/FriendsForm";
 import GroupsForm from "../Shared/GroupsForm";
@@ -25,6 +28,8 @@ const AuthenticatedLayout = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showFriends, setShowFriends] = useState(false);
   const [showAuthMenu, setShowAuthMenu] = useState(false);
+  const { user, setUser } = useUserContext();
+  const { setErrors } = useMainContext();
   useEffect(() => {
     if (showGroups) {
       setShowNotifications(false);
@@ -44,11 +49,22 @@ const AuthenticatedLayout = () => {
     }
   }, [showFriends]);
 
+  const getUser = () => {
+    axiosClient
+      .get("/user")
+      .then(({ data }) => {
+        setUser(data.user);
+      })
+      .catch((error) => {
+        setErrors([
+          error?.response?.data?.message || "Some Thing Wrong happened",
+        ]);
+      });
+  };
   const CheckForUser = async () => {
     let t = await AsyncStorage.getItem("TOKEN");
-    if (!t) {
-      router.replace("/login");
-    }
+    if (!t) router.replace("/login");
+    else getUser();
   };
   useEffect(() => {
     CheckForUser();

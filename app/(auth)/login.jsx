@@ -70,7 +70,8 @@ const login = () => {
         </View>
         <View className="flex justify-end items-center w-full gap-4 flex-row ">
           <Link
-            href={"/forgetPassword"}
+            // href={"/forgetPassword"}
+            href={"/login"}
             className="text-gray-400 underline font-bold"
           >
             forget Your Password

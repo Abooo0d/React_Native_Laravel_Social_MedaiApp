@@ -13,11 +13,12 @@ const AuthMenu = ({ show, setShow }) => {
   const router = useRouter();
   const headerHeight = useHeaderHeight();
   const { setErrors } = useMainContext();
-  const { setUser } = useUserContext();
+  const { setUser, user } = useUserContext();
+
   const logout = () => {
     axiosClient
       .post("/logout-mobile")
-      .then((data) => {
+      .then(() => {
         AsyncStorage.removeItem("TOKEN");
         setUser({});
         router.replace("/login");
@@ -51,9 +52,11 @@ const AuthMenu = ({ show, setShow }) => {
           style={{ top: headerHeight }}
         >
           <View className="w-full flex flex-col gap-2 p-4">
-            <Text className="text-[18px] font-bold text-gray-300">Abood</Text>
             <Text className="text-[18px] font-bold text-gray-300">
-              abdsadalden2001@gmail.com
+              {user?.name}
+            </Text>
+            <Text className="text-[18px] font-bold text-gray-300">
+              {user?.email}
             </Text>
           </View>
           <TouchableOpacity className="flex justify-center items-start w-full h-[40px] px-4 ">

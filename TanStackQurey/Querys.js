@@ -8,7 +8,7 @@ export const useGetPosts = () => {
     queryKey: [QUERY_KEYS.GET_POSTS],
     queryFn: () =>
       axiosClient
-        .get(route("getPosts"))
+        .get("/get-posts")
         .then(({ data }) => {
           return data;
         })
