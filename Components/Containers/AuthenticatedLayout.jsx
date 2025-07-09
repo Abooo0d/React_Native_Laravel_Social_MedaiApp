@@ -16,6 +16,8 @@ import {
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
+import FullPostCard from "../Cards/FullPostCard";
+import ImageFullView from "../Cards/ImageFullView";
 import AuthMenu from "../Shared/AuthMenu";
 import FriendsForm from "../Shared/FriendsForm";
 import GroupsForm from "../Shared/GroupsForm";
@@ -178,6 +180,8 @@ const AuthenticatedLayout = () => {
         <GroupsForm setShowForm={setShowGroups} showForm={showGroups} />
         <FriendsForm setShowForm={setShowFriends} showForm={showFriends} />
       </View>
+      <FullPostCard />
+      <ImageFullView />
     </SafeAreaView>
   );
 };

@@ -16,7 +16,7 @@ const PostsContainer = ({ posts, refetch }) => {
         flexGrow: 1,
         justifyContent: "flex-start",
         alignItems: "flex-start",
-        gap: 8,
+        gap: 16,
         padding: 8,
         paddingBottom: 20,
       }}

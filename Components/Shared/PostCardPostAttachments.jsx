@@ -1,14 +1,18 @@
 import { FontAwesome } from "@expo/vector-icons";
 import React from "react";
-import { Image, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
+import { usePostContext } from "../../Contexts/PostContext.jsx";
 import { fullUrl, isImage } from "../../Functions/Functions.js";
-const PostCardPostAttachments = ({
-  post,
-  setImage,
-  setShowImage,
-  setShowPost,
-  setImageIndex,
-}) => {
+const PostCardPostAttachments = ({ post }) => {
+  const {
+    setImage,
+    setShowImage,
+    showImage,
+    setShowPost,
+    setImageIndex,
+    setPost,
+  } = usePostContext();
+
   return (
     <>
       {post.attachments && post.attachments.length > 0 && (
@@ -31,23 +35,28 @@ const PostCardPostAttachments = ({
                     {index === 0 ? (
                       <>
                         {isImage(attachment) ? (
-                          <Image
-                            source={{
-                              uri: fullUrl(attachment.url),
-                            }}
-                            className="w-full h-full max-h-[350px] object-cover rounded-lg cursor-pointer"
-                            onClick={() => {
+                          <Pressable
+                            onPress={() => {
                               setImage(attachment.url);
                               setShowImage(true);
                               setImageIndex(index);
+                              setPost(post);
                             }}
-                          />
+                          >
+                            <Image
+                              source={{
+                                uri: fullUrl(attachment.url),
+                              }}
+                              className="w-full h-full max-h-[350px] object-cover rounded-lg cursor-pointer"
+                            />
+                          </Pressable>
                         ) : (
                           <View
                             className="w-full min-h-[200px] h-full max-h-[400px] object-cover rounded-lg cursor-pointer bg-gray-800 flex justify-center items-center flex-col gap-4"
-                            onClick={() => {
+                            onPress={() => {
                               setImage("");
                               setShowImage(true);
+                              setPost(post);
                               setImageIndex(index);
                             }}
                           >
@@ -67,20 +76,27 @@ const PostCardPostAttachments = ({
                               className="relative w-full h-full"
                               key={index}
                             >
-                              <Image
-                                source={{
-                                  uri: fullUrl(attachment.url),
-                                }}
-                                className="w-full h-full max-h-[350px] object-cover rounded-lg cursor-pointer"
-                                onClick={() => {
+                              <Pressable
+                                onPress={() => {
                                   setImage(attachment.url);
                                   setShowImage(true);
+                                  setPost(post);
                                   setImageIndex(index);
                                 }}
-                              />
+                              >
+                                <Image
+                                  source={{
+                                    uri: fullUrl(attachment.url),
+                                  }}
+                                  className="w-full h-full max-h-[350px] object-cover rounded-lg cursor-pointer"
+                                />
+                              </Pressable>
                               <View
                                 className="absolute top-0 left-0 w-full h-full bg-gray-800/50 backdrop-blur-sm flex justify-center items-center rounded-lg cursor-pointer z-[1] group"
-                                onClick={() => setShowPost(true)}
+                                onPress={() => {
+                                  setShowPost(true);
+                                  setPost(post);
+                                }}
                                 key={index}
                               >
                                 <View className="text-3xl text-gray-200 rounded-full border-[1px] border-solid border-gray-200/50 p-2 h-[60px] w-[60px] flex justify-center items-center group-hover:bg-gray-800/20 duration-200 group-hover:scale-105">
@@ -91,7 +107,7 @@ const PostCardPostAttachments = ({
                           ) : (
                             <View
                               className="w-full min-h-[200px] h-full max-h-[400px] object-cover rounded-lg cursor-pointer bg-gray-800 flex justify-center items-center flex-col gap-4"
-                              onClick={() => {
+                              onPress={() => {
                                 setImage("");
                                 setShowImage(true);
                                 setImageIndex(index);
@@ -114,23 +130,28 @@ const PostCardPostAttachments = ({
                 {post.attachments.map((attachment, index) => (
                   <React.Fragment key={index}>
                     {isImage(attachment) ? (
-                      <Image
-                        source={{
-                          uri: fullUrl(attachment.url),
-                        }}
-                        className="w-full h-full max-h-[350px] object-cover rounded-lg cursor-pointer"
-                        onClick={() => {
+                      <Pressable
+                        onPress={() => {
                           setImage(attachment.url);
                           setShowImage(true);
+                          setPost(post);
                           setImageIndex(index);
                         }}
-                      />
+                      >
+                        <Image
+                          source={{
+                            uri: fullUrl(attachment.url),
+                          }}
+                          className="w-full h-full max-h-[350px] object-cover rounded-lg cursor-pointer"
+                        />
+                      </Pressable>
                     ) : (
                       <View
                         className="w-full min-h-[200px] h-full max-h-[400px] object-cover rounded-lg cursor-pointer bg-gray-800 flex justify-center items-center flex-col gap-4"
-                        onClick={() => {
+                        onPress={() => {
                           setImage("");
                           setShowImage(true);
+                          setPost(post);
                           setImageIndex(index);
                         }}
                       >

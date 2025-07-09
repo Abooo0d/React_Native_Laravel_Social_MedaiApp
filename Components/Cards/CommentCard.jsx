@@ -4,6 +4,9 @@ import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
+import { fullUrl } from "../../Functions/Functions";
+import CommentMenu from "../Shared/CommentMenu";
+import PrimaryButton from "../Tools/PrimaryButton";
 import SecondaryButton from "../Tools/SecondaryButton";
 
 const CommentCard = ({ currentComment, post, setPost }) => {
@@ -57,20 +60,20 @@ const CommentCard = ({ currentComment, post, setPost }) => {
       });
   };
   return (
-    <View className="flex justify-center items-center flex-col h-full max-h-[500px] w-full cursor-default duration-200 relative p-2">
+    <View className="flex justify-center items-center flex-col h-fit max-h-[500px] w-full cursor-default duration-200 relative p-2">
       <View
-        className={`absolute top-[70px] left-[37px] h-[calc(100%-107px)] w-[2px] bg-[#1d2533] duration-200
+        className={`absolute top-[70px] left-[37px] h-[calc(100%-107px)] w-[2px] bg-[#1d2533]  duration-200
         ${
           showSubComments && comment.comments.length > 0
             ? " opacity-100"
             : " opacity-0"
         }`}
-      />
-      <View className="flex justify-start items-start w-full h-fit flex-col">
-        <View className="flex justify-between w-full px-4">
-          <View className="flex gap-4 justify-center items-center">
+      ></View>
+      <View className="flex  justify-start items-start w-full h-fit flex-col">
+        <View className="flex flex-row justify-between w-full px-4">
+          <View className="flex flex-row gap-4 justify-center items-center">
             <Image
-              source={{ uri: comment.user.avatar_url }}
+              source={{ uri: fullUrl(comment.user.avatar_url) }}
               alt="user_image"
               className=" rounded-full w-[40px] h-[40px] "
             />
@@ -81,7 +84,7 @@ const CommentCard = ({ currentComment, post, setPost }) => {
               </Text>
             </View>
           </View>
-          {/* {comment.user.id === user.id && (
+          {comment.user.id === user.id && (
             <CommentMenu
               openMenu={showMenu}
               setOpenMenu={setShowMenu}
@@ -90,55 +93,56 @@ const CommentCard = ({ currentComment, post, setPost }) => {
               setPost={setPost}
               setEditing={setEditing}
             />
-          )} */}
+          )}
         </View>
         {!editing ? (
           <View className="w-full flex flex-col gap-1 p-2">
             <View
-              className={`bg-gray-700/30 text-gray-300 w-fit max-w-[80%] rounded-r-md rounded-bl-md p-2 ml-8 duration-200 ${
-                editing ? "h-0 opacity-0" : " h-full opacity-100"
+              className={`bg-gray-700/30 flex text-gray-300 max-w-[80%] rounded-r-md rounded-bl-md p-2 ml-8 duration-200 ${
+                editing ? "h-0 opacity-0" : "h-fit opacity-100"
               }`}
-            />
-            <Text>{comment.comment}</Text>
+            >
+              <Text className="text-gray-400 text-lg">{comment.comment}</Text>
+            </View>
             <View
-              className={`flex justify-start items-center w-full gap-[30px] pl-[50px] duration-200  ${
-                editing ? " opacity-0 h-0" : " opacity-100 h-full"
+              className={`flex flex-row justify-start items-center w-full gap-[30px] pl-[50px] duration-200  ${
+                editing ? " opacity-0 h-0" : " opacity-100 h-fit"
               }`}
             >
               <TouchableOpacity
-                className="duration-200 relative w-[45px] h-[30px] flex justify-start pl-2 items-center rounded-md hover:bg-gray-700/40 text-gray-300 gap-[4px] px-1"
+                className="duration-200 relative w-[45px] h-[30px] flex flex-row justify-start items-center pl-2 rounded-md hover:bg-gray-700/40 text-gray-300 gap-[4px] px-1"
                 onPress={() => sendCommentReaction()}
               >
-                {comment.num_of_reactions}{" "}
-                <Text
-                  className={`text-gray-400 relative ${
-                    post.user_has_reaction
-                      ? "opacity-100 "
-                      : "scale-50 opacity-0 "
-                  }`}
-                >
-                  <FontAwesome
-                    name="thumbs-up"
-                    size={24}
-                    className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] `}
-                  />
+                <Text className="text-gray-400">
+                  {" "}
+                  {comment.num_of_reactions}{" "}
                 </Text>
-                <Text
-                  className={`text-gray-400 relative ${
-                    post.user_has_reaction
-                      ? "scale-50 opacity-0 "
-                      : "opacity-100 "
-                  }`}
-                >
-                  <FontAwesome
-                    name="thumbs-o-up"
-                    size={24}
-                    className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] `}
-                  />
+                <Text className={`text-gray-400 relative`}>
+                  {post.user_has_reaction ? (
+                    <FontAwesome
+                      name="thumbs-up"
+                      size={24}
+                      className={`absolute top-0 left-0 translate-x-[-50%] translate-y-[-50%] ${
+                        post.user_has_reaction
+                          ? "opacity-100 "
+                          : "scale-50 opacity-0 "
+                      }`}
+                    />
+                  ) : (
+                    <FontAwesome
+                      name="thumbs-o-up"
+                      size={24}
+                      className={`absolute top-0 left-0 translate-x-[-50%] translate-y-[-50%] ${
+                        post.user_has_reaction
+                          ? "scale-50 opacity-0 "
+                          : "opacity-100 "
+                      }`}
+                    />
+                  )}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="duration-200 w-[40px] h-[30px] flex justify-center items-center rounded-md hover:bg-gray-700/40 text-gray-300 gap-[4px]"
+                className="duration-200 w-[40px] h-[30px] flex flex-row justify-center items-center rounded-md hover:bg-gray-700/40  text-gray-300 gap-[4px]"
                 onClick={() => {
                   setShowSubComments((prev) => !prev);
                 }}
@@ -155,7 +159,7 @@ const CommentCard = ({ currentComment, post, setPost }) => {
         ) : (
           <View
             className={`flex flex-col gap-[2px] justify-end items-end w-full duration-200 px-4 ${
-              editing ? "h-full opacity-100" : "h-0 opacity-0"
+              editing ? "h-fit opacity-100" : "h-0 opacity-0"
             }`}
           >
             <TextInput
@@ -168,7 +172,7 @@ const CommentCard = ({ currentComment, post, setPost }) => {
                   comment: e.text,
                 }))
               }
-            ></TextInput>
+            />
             <View className="mt-2 flex gap-[4px]">
               <SecondaryButton
                 children="Cancel"

@@ -1,11 +1,17 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { useState } from "react";
-import { Image, Text, TextInput, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
 import CommentCard from "../Cards/CommentCard";
-import SecondaryButton from "../Tools/SecondaryButton";
 const PostCommentSection = ({ show, post, setPost }) => {
   const { user } = useUserContext();
   const [comment, setComment] = useState("");
@@ -31,16 +37,23 @@ const PostCommentSection = ({ show, post, setPost }) => {
   };
   return (
     <>
-      <View
-        className={`flex justify-start items-center flex-col gap-4 max-h-[500px] overflow-auto border-gray-800 border-t-[2px] border-solid py-2 ${
-          show ? " opacity-100 h-fit" : " opacity-0 h-0"
+      <ScrollView
+        className={`flex max-h-[500px] h-fit overflow-auto border-gray-800 border-t-[2px] border-solid ${
+          show ? " opacity-100 h-fit py-2" : " opacity-0 h-0 py-0"
         }`}
+        contentContainerStyle={{
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          gap: 16,
+          flexDirection: "column",
+        }}
       >
         {post.comments.length > 0 ? (
           post.comments.map((comment, index) => {
             return (
               <View
-                className="flex flex-col w-full h-full items-center"
+                className="flex flex-col w-full h-fit items-center"
                 key={index}
               >
                 <CommentCard
@@ -63,7 +76,7 @@ const PostCommentSection = ({ show, post, setPost }) => {
           </Text>
           // </View>
         )}
-      </View>
+      </ScrollView>
       <View
         className={`flex flex-row justify-between items-start gap-2 pt-2 w-full duration-200 text-gray-400 border-t-[1px] border-solid border-gray-700 mt-0 overflow-hidden  ${
           show ? " opacity-100 h-[100px]" : " opacity-0 h-[0px]"
@@ -77,23 +90,22 @@ const PostCommentSection = ({ show, post, setPost }) => {
         <View className="relative flex-1 flex justify-center items-center">
           <TextInput
             placeholder="Your comment"
-            className="flex-1 px-2 py-1 w-full bg-gray-700/50 text-gray-400 resize-none pr-[50px] placeholder:text-gray-500 h-[80px] border border-gray-800 rounded-md outline-none focus:border-gray-600 caret-gray-500"
+            className="flex-1 px-2 py-1 w-full bg-gray-700/50 text-gray-400  pr-[50px] placeholder:text-gray-500 h-[80px] border border-gray-800 rounded-md outline-none focus:border-gray-600 caret-gray-500"
             value={comment}
             multiline
             textAlignVertical="top"
             onChangeText={setComment}
           />
-          <SecondaryButton
-            classes={
+          <TouchableOpacity
+            className={
               "px-2 py-1.5 absolute top-[5px] right-[5px] bg-transparent border-none"
             }
             event={() => createComment()}
           >
-            {/* <BiSolidSend className="text-gray-400" /> */}
             <Text className="text-gray-400">
-              <FontAwesome name="send" size={24} />
+              <FontAwesome name="location-arrow" size={24} />
             </Text>
-          </SecondaryButton>
+          </TouchableOpacity>
         </View>
       </View>
     </>
