@@ -4,8 +4,6 @@ const INITIAL_DATA = {
   setShowPost: () => {},
   post: {},
   setPost: () => {},
-  image: {},
-  setImage: () => {},
   showImage: false,
   setShowImage: () => {},
   user: {},
@@ -20,7 +18,6 @@ export const PostContext = ({ children }) => {
   const [showPost, setShowPost] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
-  const [image, setImage] = useState({});
   const [user, setUser] = useState({});
   return (
     <Context.Provider
@@ -29,8 +26,6 @@ export const PostContext = ({ children }) => {
         setShowPost,
         post,
         setPost,
-        image,
-        setImage,
         showImage,
         setShowImage,
         user,

@@ -28,7 +28,7 @@ export default function PostCardPostBody({ content }) {
   }
 
   // Add remaining text after the last code block
-  if (lastIndex < content.length) {
+  if (lastIndex < content?.length) {
     elements.push({ type: "text", content: content.slice(lastIndex) });
   }
 
