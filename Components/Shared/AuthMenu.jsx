@@ -48,7 +48,7 @@ const AuthMenu = ({ show, setShow }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ type: "timing" }}
-          className={`absolute right-0 min-w-[100vw] h-[180px] flex justify-start items-center rounded-md bg-gray-900 overflow-hidden `}
+          className={`absolute right-0 min-w-[100vw] h-[180px] flex justify-start items-center rounded-md bg-gray-900 overflow-hidden border-b-[1px] border-b-solid border-b-gray-500/50 `}
           style={{ top: headerHeight }}
         >
           <View className="w-full flex flex-col gap-2 p-4">

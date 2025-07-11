@@ -9,9 +9,9 @@ import SecondaryButton from "../Tools/SecondaryButton";
 const FullPostCard = () => {
   const {
     post,
+    setPost,
     showPost,
     setShowPost,
-    setImage,
     setShowImage,
     user,
     setImageIndex,
@@ -50,7 +50,7 @@ const FullPostCard = () => {
                 <Pressable
                   onPress={() => {
                     setShowImage(true);
-                    setImageIndex(0);
+                    setImageIndex(index);
                     setPost(post);
                   }}
                   className="w-full flex-1"
@@ -69,7 +69,7 @@ const FullPostCard = () => {
                   onPress={() => {
                     setShowImage(true);
                     setPost(post);
-                    setImageIndex(0);
+                    setImageIndex(index);
                   }}
                 >
                   <FontAwesome name="file" size={24} color="black" />

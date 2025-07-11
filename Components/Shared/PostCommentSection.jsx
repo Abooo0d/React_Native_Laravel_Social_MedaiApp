@@ -1,6 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   ScrollView,
   Text,
@@ -11,14 +12,17 @@ import {
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
+import { fullUrl } from "../../Functions/Functions";
 import CommentCard from "../Cards/CommentCard";
 const PostCommentSection = ({ show, post, setPost }) => {
   const { user } = useUserContext();
   const [comment, setComment] = useState("");
   const { setSuccessMessage, setErrors } = useMainContext();
+  const [sendingComment, setSendingComment] = useState(false);
   const createComment = () => {
+    setSendingComment(true);
     axiosClient
-      .post(route("post.commentCreate", post), {
+      .post(`/post/${post.id}/comment`, {
         comment: comment,
         parent_id: null,
       })
@@ -30,51 +34,56 @@ const PostCommentSection = ({ show, post, setPost }) => {
         }));
         setComment("");
         setSuccessMessage("Comment Posted Successfully");
+        setSendingComment(false);
       })
       .catch((error) => {
         setErrors([error?.response?.data?.message || "Some Thing Went Wrong"]);
+        setSendingComment(false);
       });
   };
   return (
     <>
       <ScrollView
-        className={`flex max-h-[500px] h-fit overflow-auto border-gray-800 border-t-[2px] border-solid ${
-          show ? " opacity-100 h-fit py-2" : " opacity-0 h-0 py-0"
+        style={{ maxHeight: 400 }}
+        className={`flex flex-1 border-gray-800 border-t-[2px] border-solid ${
+          show ? " opacity-100 py-2" : " opacity-0 h-0  py-0"
         }`}
         contentContainerStyle={{
-          display: "flex",
+          flexGrow: 1,
           justifyContent: "flex-start",
           alignItems: "flex-start",
           gap: 16,
-          flexDirection: "column",
+          paddingHorizontal: 8,
+          paddingVertical: 16,
+          paddingBottom: 20,
         }}
+        indicatorStyle="black"
+        scrollEnabled={true}
+        showsVerticalScrollIndicator={true}
+        automaticallyAdjustKeyboardInsets={true}
+        nestedScrollEnabled={true}
       >
         {post.comments.length > 0 ? (
-          post.comments.map((comment, index) => {
-            return (
-              <View
-                className="flex flex-col w-full h-fit items-center"
-                key={index}
-              >
-                <CommentCard
-                  currentComment={comment}
-                  post={post}
-                  setPost={setPost}
-                  currentUser={user}
-                />
-                {post.comments.length > 1 &&
-                  index < post.comments.length - 1 && (
-                    <View className="w-[80%] h-[1px] bg-gray-700/20" />
-                  )}
-              </View>
-            );
-          })
+          post.comments.map((comment, index) => (
+            <View
+              className="flex flex-col w-full h-fit items-center"
+              key={index}
+            >
+              <CommentCard
+                currentComment={comment}
+                post={post}
+                setPost={setPost}
+                currentUser={user}
+              />
+              {post.comments.length > 1 && index < post.comments.length - 1 && (
+                <View className="w-[80%] h-[1px] bg-gray-700/20" />
+              )}
+            </View>
+          ))
         ) : (
-          // <View className="">
           <Text className="w-full text-gray-600 text-center pt-4">
             No Comments On This Post
           </Text>
-          // </View>
         )}
       </ScrollView>
       <View
@@ -83,7 +92,7 @@ const PostCommentSection = ({ show, post, setPost }) => {
         }`}
       >
         <Image
-          source={{ uri: user.avatar_url }}
+          source={{ uri: fullUrl(user.avatar_url) }}
           alt="Avatar Image"
           className="w-[40px] h-[40px] rounded-full object-cover"
         />
@@ -100,11 +109,15 @@ const PostCommentSection = ({ show, post, setPost }) => {
             className={
               "px-2 py-1.5 absolute top-[5px] right-[5px] bg-transparent border-none"
             }
-            event={() => createComment()}
+            onPress={() => createComment()}
           >
-            <Text className="text-gray-400">
-              <FontAwesome name="location-arrow" size={24} />
-            </Text>
+            {sendingComment ? (
+              <ActivityIndicator size="small" color="#6b7280" />
+            ) : (
+              <Text className="text-gray-400">
+                <FontAwesome name="location-arrow" size={24} />
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>

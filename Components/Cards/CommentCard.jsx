@@ -1,5 +1,5 @@
 import { FontAwesome } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
@@ -14,6 +14,7 @@ const CommentCard = ({ currentComment, post, setPost }) => {
   const [editing, setEditing] = useState(false);
   const [comment, setComment] = useState(currentComment);
   const [showSubComments, setShowSubComments] = useState(false);
+  const [sendingComment, setSendingComment] = useState(false);
   const [editingComment, setEditingComment] = useState({
     ...currentComment,
     comment: currentComment.comment.replace(/<br\s*\/?>/gi, "\n"),
@@ -21,8 +22,9 @@ const CommentCard = ({ currentComment, post, setPost }) => {
   const { user } = useUserContext();
   const { setSuccessMessage, setErrors } = useMainContext();
   const UpdateComment = () => {
+    setSendingComment(true);
     axiosClient
-      .put(route("comment.edit", comment.id), {
+      .put(`/comment/${comment.id}`, {
         comment: editingComment.comment,
       })
       .then((data) => {
@@ -31,21 +33,23 @@ const CommentCard = ({ currentComment, post, setPost }) => {
         setComment(data.data);
         setPost((prevPost) => ({
           ...prevPost,
-          comments: prevPost.comments.map((com, index) => {
+          comments: prevPost.comments.map((com) => {
             if (com.id !== data.data.id) return com;
             else return data.data;
           }),
         }));
         setEditingComment(data.data);
         setSuccessMessage("Comment Updated Successfully");
+        setSendingComment(false);
       })
       .catch((error) => {
+        setSendingComment(false);
         setErrors([error?.response?.data?.message || "Some Thing Went Wrong"]);
       });
   };
   const sendCommentReaction = () => {
     axiosClient
-      .post(route("comment.reaction", comment.id), {
+      .post(`/comment/${comment.id}/reaction`, {
         reaction: "like",
       })
       .then(({ data }) => {
@@ -56,22 +60,31 @@ const CommentCard = ({ currentComment, post, setPost }) => {
         }));
       })
       .catch((error) => {
+        console.log(error);
+
         setErrors([error?.response?.data?.message || "Some Thing Went Wrong"]);
       });
   };
+  useEffect(() => {
+    setEditingComment({
+      ...currentComment,
+      comment: currentComment.comment.replace(/<br\s*\/?>/gi, "\n"),
+    });
+  }, [editing]);
+
   return (
     <View className="flex justify-center items-center flex-col h-fit max-h-[500px] w-full cursor-default duration-200 relative p-2">
       <View
-        className={`absolute top-[70px] left-[37px] h-[calc(100%-107px)] w-[2px] bg-[#1d2533]  duration-200
+        className={`absolute top-[70px] left-[37px] h-[calc(100%-107px)] w-[2px] bg-[#1d2533] duration-200
         ${
           showSubComments && comment.comments.length > 0
             ? " opacity-100"
             : " opacity-0"
         }`}
       ></View>
-      <View className="flex  justify-start items-start w-full h-fit flex-col">
-        <View className="flex flex-row justify-between w-full px-4">
-          <View className="flex flex-row gap-4 justify-center items-center">
+      <View className="flex justify-start items-start w-full h-fit flex-col ">
+        <View className="flex flex-row justify-between items-center w-full ">
+          <View className="flex flex-row gap-4 justify-center items-center  w-fit">
             <Image
               source={{ uri: fullUrl(comment.user.avatar_url) }}
               alt="user_image"
@@ -95,100 +108,105 @@ const CommentCard = ({ currentComment, post, setPost }) => {
             />
           )}
         </View>
-        {!editing ? (
-          <View className="w-full flex flex-col gap-1 p-2">
+        <View className="w-full h-fit">
+          {!editing ? (
             <View
-              className={`bg-gray-700/30 flex text-gray-300 max-w-[80%] rounded-r-md rounded-bl-md p-2 ml-8 duration-200 ${
-                editing ? "h-0 opacity-0" : "h-fit opacity-100"
-              }`}
+              className="w-full flex flex-col justify-start items-start gap-1 p-2"
+              key="View"
             >
-              <Text className="text-gray-400 text-lg">{comment.comment}</Text>
+              <View
+                className={`bg-gray-800 flex text-gray-300 w-fit rounded-r-md rounded-bl-md p-2 ml-8 duration-200 h-fit opacity-100`}
+              >
+                <Text className="text-gray-400 text-lg w-fit">
+                  {comment.comment}
+                </Text>
+              </View>
+              <View
+                className={`flex flex-row justify-start items-center w-full gap-[30px] pl-[50px] duration-200 opacity-100 h-fit`}
+              >
+                <TouchableOpacity
+                  className="duration-200 relative w-[45px] h-[30px] flex flex-row justify-start items-center pl-2 rounded-md hover:bg-gray-700/40 text-gray-300 gap-[4px] px-1"
+                  onPress={() => sendCommentReaction()}
+                >
+                  <Text className="text-gray-400">
+                    {comment.num_of_reactions}{" "}
+                  </Text>
+                  <Text className={`text-gray-400 relative`}>
+                    {comment.user_has_reactions ? (
+                      <FontAwesome
+                        name="thumbs-up"
+                        size={24}
+                        className={`absolute top-0 left-0 translate-x-[-50%] translate-y-[-50%] scale-50 opacity-0 `}
+                      />
+                    ) : (
+                      <FontAwesome
+                        name="thumbs-o-up"
+                        size={24}
+                        className={`absolute top-0 left-0 translate-x-[-50%] translate-y-[-50%] opacity-100`}
+                      />
+                    )}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="duration-200 w-[40px] h-[30px] flex flex-row justify-center items-center rounded-md hover:bg-gray-700/40 text-gray-300 gap-[4px]"
+                  onClick={() => {
+                    setShowSubComments((prev) => !prev);
+                  }}
+                >
+                  <Text className="text-gray-400">
+                    {comment.num_of_comments}{" "}
+                  </Text>
+                  <Text className="text-gray-400">
+                    <FontAwesome
+                      name="commenting-o"
+                      size={24}
+                      className="mr-2"
+                    />
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
+          ) : (
             <View
-              className={`flex flex-row justify-start items-center w-full gap-[30px] pl-[50px] duration-200  ${
-                editing ? " opacity-0 h-0" : " opacity-100 h-fit"
-              }`}
+              className={`flex flex-col gap-[2px] justify-end items-end w-full h-[100px] duration-200 px-4 opacity-100`}
+              key="Editing"
             >
-              <TouchableOpacity
-                className="duration-200 relative w-[45px] h-[30px] flex flex-row justify-start items-center pl-2 rounded-md hover:bg-gray-700/40 text-gray-300 gap-[4px] px-1"
-                onPress={() => sendCommentReaction()}
-              >
-                <Text className="text-gray-400">
-                  {" "}
-                  {comment.num_of_reactions}{" "}
-                </Text>
-                <Text className={`text-gray-400 relative`}>
-                  {post.user_has_reaction ? (
-                    <FontAwesome
-                      name="thumbs-up"
-                      size={24}
-                      className={`absolute top-0 left-0 translate-x-[-50%] translate-y-[-50%] ${
-                        post.user_has_reaction
-                          ? "opacity-100 "
-                          : "scale-50 opacity-0 "
-                      }`}
-                    />
-                  ) : (
-                    <FontAwesome
-                      name="thumbs-o-up"
-                      size={24}
-                      className={`absolute top-0 left-0 translate-x-[-50%] translate-y-[-50%] ${
-                        post.user_has_reaction
-                          ? "scale-50 opacity-0 "
-                          : "opacity-100 "
-                      }`}
-                    />
-                  )}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="duration-200 w-[40px] h-[30px] flex flex-row justify-center items-center rounded-md hover:bg-gray-700/40  text-gray-300 gap-[4px]"
-                onClick={() => {
-                  setShowSubComments((prev) => !prev);
-                }}
-              >
-                <Text className="text-gray-400">
-                  {comment.num_of_comments}{" "}
-                </Text>
-                <Text className="text-gray-400">
-                  <FontAwesome name="commenting-o" size={24} className="mr-2" />
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ) : (
-          <View
-            className={`flex flex-col gap-[2px] justify-end items-end w-full duration-200 px-4 ${
-              editing ? "h-fit opacity-100" : "h-0 opacity-0"
-            }`}
-          >
-            <TextInput
-              placeholder="Your comment"
-              className="flex-1 px-2 py-1 bg-gray-700/50 text-gray-400 resize-none overflow-scroll h-[80px] border-gray-800 rounded-md outline-none focus:border-gray-600 ring-0 focus:ring-0 duration-200 cursor-pointer w-full"
-              value={editingComment.comment}
-              onChangeText={(e) =>
-                setEditingComment((prevCOmment) => ({
-                  ...prevCOmment,
-                  comment: e.text,
-                }))
-              }
-            />
-            <View className="mt-2 flex gap-[4px]">
-              <SecondaryButton
-                children="Cancel"
-                classes="px-2 py-1 text-sm"
-                event={() => setEditing(false)}
-              />
-              <PrimaryButton
-                children="Post"
-                classes="px-2 py-1 text-sm"
-                event={() => {
-                  UpdateComment();
+              <TextInput
+                placeholder="Your comment"
+                className="flex-1 px-2 py-1 w-full bg-gray-700/50 text-gray-400 placeholder:text-gray-500 h-[80px] border border-gray-800 rounded-md outline-none focus:border-gray-600 caret-gray-500"
+                value={editingComment.comment}
+                multiline
+                textAlignVertical="top"
+                onChangeText={(text) => {
+                  setEditingComment((prevCOmment) => ({
+                    ...prevCOmment,
+                    comment: text,
+                  }));
                 }}
               />
+
+              <View className="mt-2 flex flex-row justify-end items-center gap-[4px] text-gray-500">
+                <SecondaryButton
+                  children="Cancel"
+                  classes="px-2 py-1 text-sm"
+                  event={() => setEditing(false)}
+                >
+                  <Text className="text-gray-400">Cancel</Text>
+                </SecondaryButton>
+                <PrimaryButton
+                  children="Post"
+                  classes="px-2 py-1 text-sm "
+                  event={() => {
+                    UpdateComment();
+                  }}
+                  processing={sendingComment}
+                >
+                  <Text className="text-gray-400">Post</Text>
+                </PrimaryButton>
+              </View>
             </View>
-          </View>
-        )}
+          )}
+        </View>
       </View>
       {/* {showSubComments && (
         <SubCommentsSection

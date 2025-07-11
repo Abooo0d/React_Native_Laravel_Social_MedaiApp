@@ -24,11 +24,11 @@ const PostCard = ({ post, refetch }) => {
   return (
     <>
       <View
-        className={` w-full h-fit bg-gray-900 rounded-lg py-4 px-4 flex flex-col duration-500`}
+        className={` w-full h-fit bg-gray-900 py-4 px-4 flex flex-col duration-500`}
       >
         <View className="flex flex-row justify-between items-center">
           <PostCardOwnerInfo post={localPost} />
-          <PostCardMenu post={localPost} />
+          <PostCardMenu post={localPost} refetch={refetch} />
         </View>
         <PostCardPostBody content={localPost.body} />
         <PostCardPostAttachments post={localPost} />

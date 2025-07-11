@@ -12,18 +12,21 @@ const PostsContainer = ({ posts, refetch }) => {
   return (
     <ScrollView
       scrollEnabled
+      nestedScrollEnabled={true}
       contentContainerStyle={{
         flexGrow: 1,
         justifyContent: "flex-start",
         alignItems: "flex-start",
-        gap: 16,
-        padding: 8,
+        gap: 6,
+        paddingVertical: 6,
         paddingBottom: 20,
       }}
     >
       <CreatePostForm />
       {allPosts?.length > 0 &&
-        allPosts?.map((post, index) => <PostCard post={post} key={index} />)}
+        allPosts?.map((post, index) => (
+          <PostCard post={post} key={index} refetch={refetch} />
+        ))}
     </ScrollView>
   );
 };

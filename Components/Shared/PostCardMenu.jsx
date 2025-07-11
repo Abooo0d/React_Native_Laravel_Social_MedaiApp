@@ -1,10 +1,14 @@
 import { Entypo, FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
+import axiosClient from "../../Axios/AxiosClient";
+import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
-const PostCardMenu = ({ post }) => {
+const PostCardMenu = ({ post, refetch }) => {
   const [showForm, setShowForm] = useState();
+  const { setErrors, setSuccessMessage } = useMainContext();
   const { user } = useUserContext();
   const showUpdate = () => {
     return post.user.id === user?.id ? true : false;
@@ -16,25 +20,47 @@ const PostCardMenu = ({ post }) => {
         ? true
         : false;
   };
-  const onDelete = () => {
-    // if (window.confirm("Are You Sure To Delete This Post")) {
-    //   router.delete(route("post.delete", post), {
-    //     data: post,
-    //     onSuccess: () => {
-    //       setOpenMenu(false);
-    //       setSuccessMessage("Post Deleted Successfully");
-    //       refetch();
-    //     },
-    //     onError: (error) => {
-    //       setErrors([
-    //         error?.response?.data?.message || "Some Thing Went Wrong",
-    //       ]);
-    //     },
-    //   });
+
+  const confirmDelete = () => {
+    Alert.alert(
+      "Delete Post",
+      "Are you sure you want to delete this post?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            onDelete();
+          },
+        },
+      ],
+      { cancelable: true },
+    );
   };
-  const copyToClipBoard = () => {
-    // console.log(route("post.publicView", post));
-    // navigator.clipboard.writeText(route("post.publicView", post));
+
+  const onDelete = () => {
+    axiosClient
+      .delete(`/post/${post.id}`)
+      .then(() => {
+        setShowForm(false);
+        setSuccessMessage("Post Deleted Successfully");
+        refetch();
+      })
+      .catch((error) => {
+        setShowForm(false);
+        setErrors([error?.response?.data?.message || "Some Thing Went Wrong"]);
+      });
+  };
+  const copyToClipBoard = async () => {
+    await Clipboard.setStringAsync(
+      `http://192.168.1.107:8000/public/post/${post.id}`,
+    );
+    setShowForm(false);
+    // Alert.alert("Copied", "Text has been copied to your clipboard.");
   };
   return (
     <>
@@ -54,7 +80,7 @@ const PostCardMenu = ({ post }) => {
           className={`absolute border-gray-700 border-[1px] border-solid top-[60px] right-[0px] z-10 bg-gray-800 w-[150px] duration-300 cursor-pointer rounded-md flex flex-col justify-start items-center overflow-hidden`}
         >
           <TouchableOpacity
-            onClick={() => {
+            onPress={() => {
               router.push("/pages/Home");
             }}
             className="bg-gray-800 duration-300 flex flex-row gap-2 justify-start items-start w-full py-2 px-4 text-sm font-medium text-gray-300 focus:outline-none text-left"
@@ -68,7 +94,7 @@ const PostCardMenu = ({ post }) => {
             <Text className="text-gray-300 text-lg ">View Post</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onClick={() => {
+            onPress={() => {
               copyToClipBoard();
             }}
             className="bg-gray-800 duration-300 flex flex-row gap-2 justify-start items-start w-full py-2 px-4 text-sm font-medium text-gray-300 focus:outline-none text-left"
@@ -83,7 +109,7 @@ const PostCardMenu = ({ post }) => {
           </TouchableOpacity>
           {showUpdate() && (
             <TouchableOpacity
-              onClick={() => {
+              onPress={() => {
                 setShowForm(true);
                 setOpenMenu(false);
               }}
@@ -101,7 +127,7 @@ const PostCardMenu = ({ post }) => {
           {showDelete() && (
             <TouchableOpacity
               className="bg-gray-800 duration-300 flex flex-row gap-2 justify-start items-start w-full py-2 px-4 text-sm font-medium text-gray-300 focus:outline-none text-left"
-              onClick={() => onDelete()}
+              onPress={() => confirmDelete()}
             >
               <FontAwesome5
                 name="trash-alt"

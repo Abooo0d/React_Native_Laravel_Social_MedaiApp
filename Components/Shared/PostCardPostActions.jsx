@@ -7,7 +7,7 @@ const PostCardPostActions = ({ post, setPost, setShowCommentSection }) => {
   const { setErrors } = useMainContext();
   const sendReaction = () => {
     axiosClient
-      .post(route("post.reaction", post), {
+      .post(`/post/${post.id}/reaction`, {
         reaction: "like",
       })
       .then(({ data }) => {
@@ -47,31 +47,27 @@ const PostCardPostActions = ({ post, setPost, setShowCommentSection }) => {
       </View>
       <View className="flex flex-row justify-end items-center gap-2 flex-1 w-full border-t-[1px] border-solid border-gray-500/50 pt-1">
         <TouchableOpacity
-          className="flex flex-row justify-center items-center gap-2 relative rounded-lg cursor-pointer duration-200 h-[40px] flex-1"
+          className="flex flex-row justify-center items-center  gap-2 relative rounded-lg cursor-pointer duration-200 h-[40px] flex-1"
           onPress={sendReaction}
         >
-          <Text
-            className={`text-gray-400 relative ${
-              post.user_has_reaction ? "opacity-100 " : "scale-50 opacity-0 "
-            }`}
-          >
-            <FontAwesome
-              name="thumbs-up"
-              size={24}
-              className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] `}
-            />
-          </Text>
-          <Text
-            className={`text-gray-400 relative ${
-              post.user_has_reaction ? "scale-50 opacity-0 " : "opacity-100 "
-            }`}
-          >
-            <FontAwesome
-              name="thumbs-o-up"
-              size={24}
-              className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] `}
-            />
-          </Text>
+          {post.user_has_reaction ? (
+            <Text className={`text-gray-400 relative`}>
+              <FontAwesome
+                name="thumbs-up"
+                size={24}
+                className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] `}
+              />
+            </Text>
+          ) : (
+            <Text className={`text-gray-400 relative`}>
+              <FontAwesome
+                name="thumbs-o-up"
+                size={24}
+                className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] `}
+              />
+            </Text>
+          )}
+
           <View className=" text-sm text-gray-400">
             <Text className="text-gray-400">
               {post.user_has_reaction ? "Liked" : "Like"}

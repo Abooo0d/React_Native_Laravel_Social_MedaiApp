@@ -1,15 +1,16 @@
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
+import * as FileSystem from "expo-file-system";
 import { useState } from "react";
 import { Image, Modal, Text, View } from "react-native";
 import { usePostContext } from "../../Contexts/PostContext";
 import { fullUrl, isImage } from "../../Functions/Functions";
 import SecondaryButton from "../Tools/SecondaryButton";
+import { useMainContext } from "./../../Contexts/MainContext";
 const ImageFullView = ({ update }) => {
   const { showImage, setShowImage, imageIndex, setImageIndex, post } =
     usePostContext();
   const [attachmentId, setAttachmentId] = useState(0);
-
+  const { setSuccessMessage } = useMainContext();
   const next = (index) => {
     if (index < post?.attachments?.length - 1) {
       setImageIndex(index + 1);
@@ -29,14 +30,35 @@ const ImageFullView = ({ update }) => {
     }
   };
 
+  const downloadAttachment = async () => {
+    try {
+      const attachment = post?.attachments[imageIndex];
+      const fileUrl = `http://192.168.1.107:8000/api/post/download/${attachment.id}`;
+
+      const fileUri = FileSystem.documentDirectory + attachment.name;
+
+      const { uri } = await FileSystem.downloadAsync(fileUrl, fileUri);
+
+      // Optional: Share the file or open it
+      // if (await Sharing.isAvailableAsync()) {
+      //   await Sharing.shareAsync(uri);
+      // } else {
+      // alert("Download complete. File saved to device.");
+      console.log("ABood");
+
+      setSuccessMessage("Download complete. File saved to device.");
+      // }
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      alert("Failed to download file");
+    }
+  };
+
   return (
     <Modal visible={showImage} animationType="slide" transparent={true}>
-      <BlurView
-        intensity={20}
-        tint="systemChromeMaterialDark"
-        blurReductionFactor={5}
-        experimentalBlurMethod="dimezisBlurView"
-        className={`flex relative min-h-[100vh] max-h-[100vh] min-w-[100vw] z-10 justify-center items-center overflow-hidden bg px-40`}
+      {/* <View className="w-full h-full px-4 py-4 bg-gray-900 flex justify-start items-start relative"> */}
+      <View
+        className={`flex relative min-h-[100vh] max-h-[100vh] min-w-[100vw] z-10 justify-center items-center overflow-hidden bg px-40 bg-gray-900`}
       >
         <View className=" h-fit w-full absolute top-0 right-0 flex-1 flex justify-end items-end gap-2 z-[100] px-4 py-4">
           <SecondaryButton
@@ -51,7 +73,9 @@ const ImageFullView = ({ update }) => {
           </SecondaryButton>
           <SecondaryButton
             classes=" py-1.5 px-3 right-0 w-[46px] cursor-default z-10"
-            event={() => {}}
+            event={() => {
+              downloadAttachment();
+            }}
           >
             <Text className="text-gray-400">
               <FontAwesome name="download" size={24} />
@@ -97,7 +121,8 @@ const ImageFullView = ({ update }) => {
             </>
           )}
         </View>
-      </BlurView>
+      </View>
+      {/* </View> */}
     </Modal>
   );
 };

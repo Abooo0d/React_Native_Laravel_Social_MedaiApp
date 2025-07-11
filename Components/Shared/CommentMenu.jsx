@@ -28,45 +28,46 @@ const CommentMenu = ({
     // }
   };
   return (
-    <View className="relative">
+    <View className="relative w-[40px] h-[40px]">
       <TouchableOpacity
-        className={`w-10 h-10 rounded-md cursor-pointer flex justify-center items-center border-[1px] border-solid  p-1 duration-200 ${
+        className={`w-10 h-10 rounded-md cursor-pointer flex justify-center items-center border-[1px] border-solid p-1 duration-200 ${
           openMenu
             ? "bg-gray-800 border-gray-700"
             : "bg-gray-900 border-transparent"
         }`}
-        onPRess={() => {
+        onPress={() => {
           openMenu ? setOpenMenu(false) : setOpenMenu(true);
         }}
       >
         <Entypo
-          size={25}
+          size={20}
           className="text-gray-500 flex justify-center items-center text-center "
           name="dots-three-vertical"
           color={"#6b7280"}
         />
       </TouchableOpacity>
-      <View
-        className={`absolute border-gray-700 border-[1px] border-solid top-[45px] left-[-100px] bg-gray-800 w-fit  duration-300 cursor-pointer shadow-2xl rounded-md flex flex-col justify-start items-center overflow-hidden ${
-          openMenu ? "opacity-100 " : " opacity-0 "
-        }`}
-      >
-        <TouchableOpacity
-          onPress={() => {
-            setOpenMenu(false);
-            setEditing(true);
-          }}
-          className="bg-gray-800 duration-300 hover:bg-gray-700 py-2 px-4 pr-16 text-sm font-medium text-white focus:outline-none text-left w-full"
+      {openMenu && (
+        <View
+          className="border-gray-700 border-[1px] border-solid top-[10px] left-[-120px] bg-gray-800 w-[150px] duration-300 rounded-md flex flex-col justify-start items-center overflow-hidden"
+          key="menu"
         >
-          <Text className="text-white">Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          className="bg-gray-800 duration-300 hover:bg-gray-700 py-2 px-4 pr-16 text-sm font-medium text-white focus:outline-none text-left w-full"
-          onPress={() => onDelete()}
-        >
-          <Text className="text-white">Delete</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            onPress={() => {
+              setOpenMenu(false);
+              setEditing(true);
+            }}
+            className="bg-gray-800 py-2 px-4 pr-16 text-sm font-medium text-white text-left w-full"
+          >
+            <Text className="text-white">Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="bg-gray-800 py-2 px-4 pr-16 text-sm font-medium text-white text-left w-full"
+            onPress={() => onDelete()}
+          >
+            <Text className="text-white">Delete</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

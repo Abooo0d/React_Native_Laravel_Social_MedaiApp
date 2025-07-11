@@ -1,10 +1,11 @@
 {
   "expo": {
-    "name": "React-Native-Social-Media-App",
-    "slug": "React-Native-Social-Media-App",
+    "name": "LaraChat",
+    "slug": "LaraChat",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo.png",
+    "backgroundColor": "#050b1c",
     "scheme": "reactnativesocialmediaapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,8 +14,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/logo.png",
+        "backgroundColor": "#050b1c"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.ReactNativeSocialMediaApp"
@@ -22,17 +23,17 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/logo.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#050b1c"
         }
       ]
     ],

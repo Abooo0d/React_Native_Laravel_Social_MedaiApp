@@ -1,6 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { Image, Text, View } from "react-native";
+import { fullUrl } from "../../Functions/Functions";
 
 const PostCardOwnerInfo = ({ post }) => {
   return (
@@ -8,7 +9,7 @@ const PostCardOwnerInfo = ({ post }) => {
       <Image
         // source={post.user.avatar_url}
         source={{
-          uri: post.user?.avatar_url,
+          uri: fullUrl(post.user?.avatar_url),
         }}
         className="w-[60px] h-[60px] min-w-[60px] rounded-full border-[1px] border-gray-600/50 hover:border-gray-600 duration-200 object-cover"
       />
