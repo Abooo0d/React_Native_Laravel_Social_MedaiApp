@@ -1,4 +1,5 @@
 import { useMainContext } from "@/Contexts/MainContext";
+import { useUserContext } from "@/Contexts/UserContext";
 import { useQuery } from "@tanstack/react-query";
 import axiosClient from "../Axios/AxiosClient";
 import { QUERY_KEYS } from "./QueryKeys";
@@ -37,10 +38,12 @@ export const useGetNotifications = () => {
   });
 };
 export const useGetGroups = () => {
+  const { user } = useUserContext();
   const { setErrors } = useMainContext();
   return useQuery({
     queryKey: [QUERY_KEYS.GET_GROUPS],
-    queryFn: () =>
+    queryFn: () => {
+      if (!user?.id) return [];
       axiosClient
         .get(route("getGroups"))
         .then(({ data }) => {
@@ -50,7 +53,8 @@ export const useGetGroups = () => {
           setErrors([
             error?.response?.data?.message || "Some Thing Went Wrong",
           ]);
-        }),
+        });
+    },
   });
 };
 export const useGetChatGroups = () => {

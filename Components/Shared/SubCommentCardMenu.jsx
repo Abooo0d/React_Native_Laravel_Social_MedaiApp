@@ -3,31 +3,25 @@ import { Text, TouchableOpacity, View } from "react-native";
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 
-const CommentMenu = ({
+const SubCommentCardMenu = ({
   openMenu,
   setOpenMenu,
   comment,
-  setPost,
+  setComment,
   setEditing,
 }) => {
-  const { setSuccessMessage, setErrors } = useMainContext();
+  const { setSuccessMessage } = useMainContext();
   const onDelete = () => {
     // if (window.confirm("Are You Sure To Delete This Comment!?")) {
-    axiosClient
-      .delete(`/comment/${comment.id}`)
-      .then(() => {
-        setPost((prevPost) => ({
-          ...prevPost,
-          comments: prevPost.comments.filter((c) => c.id !== comment.id),
-        }));
-        setSuccessMessage("Comment Deleted Successfully");
-        setOpenMenu(false);
-      })
-      .catch((error) => {
-        console.log(error?.response?.data?.message);
 
-        setErrors([error?.response?.data?.message || "Some Thing Went Wrong"]);
-      });
+    axiosClient.delete(`/comment/${comment.id}`).then(() => {
+      setComment((prevComment) => ({
+        ...prevComment,
+        comments: prevComment.comments.filter((c) => c.id !== comment.id),
+      }));
+      setSuccessMessage("Comment Deleted Successfully");
+      setOpenMenu(false);
+    });
     // }
   };
   return (
@@ -75,4 +69,4 @@ const CommentMenu = ({
   );
 };
 
-export default CommentMenu;
+export default SubCommentCardMenu;

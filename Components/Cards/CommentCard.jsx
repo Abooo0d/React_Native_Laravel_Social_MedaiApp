@@ -4,8 +4,8 @@ import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
-import { fullUrl } from "../../Functions/Functions";
 import CommentMenu from "../Shared/CommentMenu";
+import SubCommentsSection from "../Shared/SubCommentsSection";
 import PrimaryButton from "../Tools/PrimaryButton";
 import SecondaryButton from "../Tools/SecondaryButton";
 
@@ -19,6 +19,7 @@ const CommentCard = ({ currentComment, post, setPost }) => {
     ...currentComment,
     comment: currentComment.comment.replace(/<br\s*\/?>/gi, "\n"),
   });
+
   const { user } = useUserContext();
   const { setSuccessMessage, setErrors } = useMainContext();
   const UpdateComment = () => {
@@ -73,7 +74,7 @@ const CommentCard = ({ currentComment, post, setPost }) => {
   }, [editing]);
 
   return (
-    <View className="flex justify-center items-center flex-col h-fit max-h-[500px] w-full cursor-default duration-200 relative p-2">
+    <View className="flex flex-col items-start justify-start w-full cursor-default duration-200 relative p-2">
       <View
         className={`absolute top-[70px] left-[37px] h-[calc(100%-107px)] w-[2px] bg-[#1d2533] duration-200
         ${
@@ -86,7 +87,9 @@ const CommentCard = ({ currentComment, post, setPost }) => {
         <View className="flex flex-row justify-between items-center w-full ">
           <View className="flex flex-row gap-4 justify-center items-center  w-fit">
             <Image
-              source={{ uri: fullUrl(comment.user.avatar_url) }}
+              source={{
+                uri: comment.user.avatar_url,
+              }}
               alt="user_image"
               className=" rounded-full w-[40px] h-[40px] "
             />
@@ -149,7 +152,7 @@ const CommentCard = ({ currentComment, post, setPost }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   className="duration-200 w-[40px] h-[30px] flex flex-row justify-center items-center rounded-md hover:bg-gray-700/40 text-gray-300 gap-[4px]"
-                  onClick={() => {
+                  onPress={() => {
                     setShowSubComments((prev) => !prev);
                   }}
                 >
@@ -208,7 +211,7 @@ const CommentCard = ({ currentComment, post, setPost }) => {
           )}
         </View>
       </View>
-      {/* {showSubComments && (
+      {showSubComments && (
         <SubCommentsSection
           show={showSubComments}
           comments={comment.comments}
@@ -216,7 +219,7 @@ const CommentCard = ({ currentComment, post, setPost }) => {
           comment={comment}
           setComment={setComment}
         />
-      )} */}
+      )}
     </View>
   );
 };

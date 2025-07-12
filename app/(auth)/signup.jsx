@@ -17,9 +17,11 @@ const signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
+  const [isLoadingSignup, setIsLoadingSignup] = useState(false);
   const { setErrors } = useMainContext();
 
   const signUp = async () => {
+    setIsLoadingSignup(true);
     let data = {
       name: name,
       email: email,
@@ -33,11 +35,13 @@ const signup = () => {
         setUser(data.user);
         AsyncStorage.setItem("TOKEN", data.token);
         router.replace("/pages/Home");
+        setIsLoadingSignup(false);
       })
       .catch((error) => {
         setErrors([
           error?.response?.data?.message || "Some Thing Wrong happened",
         ]);
+        setIsLoadingSignup(false);
       });
   };
 
@@ -95,7 +99,11 @@ const signup = () => {
           >
             <Text className="text-gray-400 text-xl">Login</Text>
           </SecondaryButton>
-          <PrimaryButton classes="px-2 py-1 text-gray-300" event={signUp}>
+          <PrimaryButton
+            classes="px-2 py-1 text-gray-300"
+            event={signUp}
+            processing={isLoadingSignup}
+          >
             <Text className="text-gray-400 text-xl">Sign Up</Text>
           </PrimaryButton>
         </View>

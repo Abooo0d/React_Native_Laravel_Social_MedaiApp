@@ -15,10 +15,12 @@ const login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
   const [error, setError] = useState();
   const { setUser } = useUserContext();
   const { setErrors, setSuccessMessage } = useMainContext();
   const login = async () => {
+    setIsLoadingLogin(true);
     axiosClient
       .post("/login-mobile", { email: email, password: password })
       .then(async ({ data }) => {
@@ -28,12 +30,14 @@ const login = () => {
         setUser(user);
         setSuccessMessage(`Welcome ${user.name}`);
         router.replace("/pages/Home");
+        setIsLoadingLogin(false);
       })
       .catch((error) => {
         console.log(error?.response?.data?.message);
         setErrors([
           error?.response?.data?.message || "Some Thing Wrong happened",
         ]);
+        setIsLoadingLogin(false);
       });
   };
 
@@ -86,6 +90,7 @@ const login = () => {
           <PrimaryButton
             classes="px-2 py-1 text-gray-300"
             text="Login"
+            processing={isLoadingLogin}
             event={() => {
               login();
             }}

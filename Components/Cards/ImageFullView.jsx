@@ -44,7 +44,6 @@ const ImageFullView = ({ update }) => {
       //   await Sharing.shareAsync(uri);
       // } else {
       // alert("Download complete. File saved to device.");
-      console.log("ABood");
 
       setSuccessMessage("Download complete. File saved to device.");
       // }

@@ -12,7 +12,6 @@ import {
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
-import { fullUrl } from "../../Functions/Functions";
 import CommentCard from "../Cards/CommentCard";
 const PostCommentSection = ({ show, post, setPost }) => {
   const { user } = useUserContext();
@@ -46,7 +45,7 @@ const PostCommentSection = ({ show, post, setPost }) => {
       <ScrollView
         style={{ maxHeight: 400 }}
         className={`flex flex-1 border-gray-800 border-t-[2px] border-solid ${
-          show ? " opacity-100 py-2" : " opacity-0 h-0  py-0"
+          show ? " opacity-100 py-2" : " opacity-0 h-0 py-0"
         }`}
         contentContainerStyle={{
           flexGrow: 1,
@@ -57,9 +56,7 @@ const PostCommentSection = ({ show, post, setPost }) => {
           paddingVertical: 16,
           paddingBottom: 20,
         }}
-        indicatorStyle="black"
         scrollEnabled={true}
-        showsVerticalScrollIndicator={true}
         automaticallyAdjustKeyboardInsets={true}
         nestedScrollEnabled={true}
       >
@@ -92,7 +89,7 @@ const PostCommentSection = ({ show, post, setPost }) => {
         }`}
       >
         <Image
-          source={{ uri: fullUrl(user.avatar_url) }}
+          source={{ uri: user.avatar_url }}
           alt="Avatar Image"
           className="w-[40px] h-[40px] rounded-full object-cover"
         />
