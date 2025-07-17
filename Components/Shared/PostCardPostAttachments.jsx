@@ -170,7 +170,9 @@ const PostCardPostAttachments = ({ post }) => {
                       setImageIndex(0);
                     }}
                   >
-                    <FontAwesome name="file" size={24} color="black" />
+                    <Text className="text-gray-400">
+                      <FontAwesome name="file" size={24} color="black" />
+                    </Text>
                     {/* <FaFile className="w-20 h-20 text-gray-500" /> */}
                     <Text className="text-gray-500 font-bold text-xl max-w-[80%] break-words text-center">
                       {post.attachments[0]?.name}

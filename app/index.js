@@ -22,9 +22,9 @@ export default function Index() {
     <View className="bg-homeFeed flex-1 justify-center items-center gap-4">
       <Image
         source={require("../assets/images/logo.png")}
-        className="w-[120px] h-[120px]  object-contain "
+        className="w-[120px] h-[120px] object-contain "
       />
-      <Text className="text-gray-400 text-3xl font-bold">Laravel</Text>
+      <Text className="text-gray-400 text-3xl font-bold">LaraChat</Text>
     </View>
   );
 }

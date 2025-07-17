@@ -5,9 +5,11 @@ const axiosClient = axios.create({
   baseURL: "http://192.168.1.107:8000/api",
   withCredentials: true,
   headers: {
+    Accept: "application/json",
     "X-Requested-With": "XMLHttpRequest",
   },
 });
+
 axiosClient.interceptors.request.use(
   async function (config) {
     const token = await AsyncStorage.getItem("TOKEN");
@@ -20,16 +22,4 @@ axiosClient.interceptors.request.use(
     return Promise.reject(error);
   },
 );
-
-// axiosClient.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     if (error.response?.status === 401) {
-//       // Token expired or invalid — maybe logout user
-//       await AsyncStorage.removerItem("TOKEN");
-//     }
-//     return Promise.reject(error);
-//   },
-// );
-
 export default axiosClient;

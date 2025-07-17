@@ -6,13 +6,13 @@ import {
   ScrollView,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
 import SubCommentCard from "../Cards/SubCommentCard";
-import SecondaryButton from "../Tools/SecondaryButton";
 
 const SubCommentsSection = ({ show, comments, post, comment, setComment }) => {
   const { user } = useUserContext();
@@ -39,27 +39,42 @@ const SubCommentsSection = ({ show, comments, post, comment, setComment }) => {
       });
   };
   return (
-    <View className="pl-[50px] w-full flex-1 flex justify-start items-start overflow-auto">
-      <View className="relative flex p-2 flex-row justify-start items-start w-full gap-[10px] mb-4">
-        <Image
-          source={{
-            uri: user.avatar_url,
-          }}
-          alt="Avatar Image"
-          className="w-[40px] h-[40px] rounded-full"
-        />
-        <View className="relative w-[80%] flex h-[40px]">
-          <TextInput
-            placeholder="Your comment"
-            className="flex-1 px-2 py-1 w-full bg-gray-700/50 text-gray-400 placeholder:text-gray-500 h-[40px] border border-gray-800 rounded-md outline-none focus:border-gray-600 caret-gray-500"
-            value={newComment}
-            multiline
-            textAlignVertical="top"
-            onChangeText={(text) => {
-              setNewComment(text);
+    <View className=" pl-[50px] w-full flex-1 flex justify-start items-start overflow-auto ">
+      <View className="w-full flex-1 border-l-[1px] border-gray-600/50 border-solid">
+        <View className="relative flex p-2 flex-row justify-start items-start w-full gap-[10px] mb-4 border-b-[1px] border-gray-600/50 border-solid">
+          <Image
+            source={{
+              uri: user.avatar_url,
             }}
+            alt="Avatar Image"
+            className="w-[40px] h-[40px] rounded-full"
           />
-          <SecondaryButton
+          <View className="relative w-[80%] flex h-[40px]">
+            <TextInput
+              placeholder="Your comment"
+              className="flex-1 px-2 py-1 w-full bg-gray-700/50 text-gray-400 placeholder:text-gray-500 h-[40px] border border-gray-800 rounded-md outline-none focus:border-gray-600 caret-gray-500"
+              value={newComment}
+              multiline
+              textAlignVertical="top"
+              onChangeText={(text) => {
+                setNewComment(text);
+              }}
+            />
+            <TouchableOpacity
+              className={
+                "px-2 py-1.5 absolute top-[5px] right-[5px] bg-transparent border-none"
+              }
+              onPress={() => createComment()}
+            >
+              {sendingComment ? (
+                <ActivityIndicator size="small" color="#6b7280" />
+              ) : (
+                <Text className="text-gray-400">
+                  <FontAwesome name="location-arrow" size={24} />
+                </Text>
+              )}
+            </TouchableOpacity>
+            {/* <SecondaryButton
             classes={"px-2 py-1.5 absolute top-[5px] right-[5px]"}
             event={() => createComment()}
           >
@@ -70,42 +85,43 @@ const SubCommentsSection = ({ show, comments, post, comment, setComment }) => {
                 <FontAwesome name="location-arrow" size={18} />
               </Text>
             )}
-          </SecondaryButton>
+          </SecondaryButton> */}
+          </View>
         </View>
+        {comments.length > 0 && (
+          <ScrollView
+            style={{ maxHeight: 200 }}
+            className={`flex flex-1 w-full ${
+              show ? " opacity-100 h-full py-2" : " opacity-0 h-0 py-0"
+            }`}
+            contentContainerStyle={{
+              flexGrow: 1,
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              gap: 16,
+              paddingHorizontal: 8,
+              paddingVertical: 16,
+              paddingBottom: 20,
+            }}
+            scrollEnabled={true}
+            automaticallyAdjustKeyboardInsets={true}
+            nestedScrollEnabled={true}
+          >
+            {comments.map((comment, index) => (
+              <React.Fragment key={index}>
+                <SubCommentCard
+                  key={index}
+                  comment={comment}
+                  setMainComment={setComment}
+                />
+                {comments.length > 1 && index < comments.length - 1 && (
+                  <View className="w-[80%] h-[1px] bg-gray-700/20" />
+                )}
+              </React.Fragment>
+            ))}
+          </ScrollView>
+        )}
       </View>
-      {comments.length > 0 && (
-        <ScrollView
-          style={{ maxHeight: 200 }}
-          className={`flex flex-1 w-full ${
-            show ? " opacity-100 h-full py-2" : " opacity-0 h-0 py-0"
-          }`}
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-            gap: 16,
-            paddingHorizontal: 8,
-            paddingVertical: 16,
-            paddingBottom: 20,
-          }}
-          scrollEnabled={true}
-          automaticallyAdjustKeyboardInsets={true}
-          nestedScrollEnabled={true}
-        >
-          {comments.map((comment, index) => (
-            <React.Fragment key={index}>
-              <SubCommentCard
-                key={index}
-                comment={comment}
-                setMainComment={setComment}
-              />
-              {comments.length > 1 && index < comments.length - 1 && (
-                <View className="w-[80%] h-[1px] bg-gray-700/20" />
-              )}
-            </React.Fragment>
-          ))}
-        </ScrollView>
-      )}
     </View>
   );
 };

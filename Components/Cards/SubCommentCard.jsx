@@ -44,7 +44,6 @@ const SubCommentCard = ({ comment, setMainComment }) => {
         reaction: "like",
       })
       .then(({ data }) => {
-        console.log("Reaction:", data);
         setCurrentComment((prevComment) => ({
           ...prevComment,
           user_has_reactions: data.user_has_reactions,

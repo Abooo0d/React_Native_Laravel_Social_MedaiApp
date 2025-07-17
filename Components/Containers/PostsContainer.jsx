@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import PostCard from "../Cards/PostCard";
-import CreatePostForm from "./../Shared/CreatePostForm";
+import CreatePost from "./CreatePost";
 const PostsContainer = ({ posts, refetch }) => {
   const [allData, setAllData] = useState(posts?.posts);
   const [allPosts, setAllPosts] = useState(posts?.posts?.data);
@@ -22,7 +22,11 @@ const PostsContainer = ({ posts, refetch }) => {
         paddingBottom: 20,
       }}
     >
-      <CreatePostForm />
+      <CreatePost
+        classes="px-3 py-3 bg-gray-900"
+        refetch={refetch}
+        groupId=""
+      />
       {allPosts?.length > 0 &&
         allPosts?.map((post, index) => (
           <PostCard post={post} key={index} refetch={refetch} />

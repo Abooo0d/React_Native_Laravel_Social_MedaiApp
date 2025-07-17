@@ -38,7 +38,7 @@ export default function PostCardPostBody({ content }) {
         gap: 12,
         backgroundColor: "#111827",
         paddingHorizontal: 20,
-        paddingVertical: 20,
+        paddingVertical: 10,
       }}
     >
       {elements.map((el, i) =>
