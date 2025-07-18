@@ -1,6 +1,7 @@
 import { Entypo, FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { usePostContext } from "../../Contexts/PostContext";
 import { isImage } from "../../Functions/Functions";
 
 const CreatePostPostAttachments = ({
@@ -8,11 +9,10 @@ const CreatePostPostAttachments = ({
   post,
   attachmentsErrors,
   onDelete,
-  setShowImage,
   setShowPost,
-  setImageIndex,
-  setPost,
 }) => {
+  const { setPost, setShowImage, setImageIndex, setCreate } = usePostContext();
+
   return (
     <Pressable
       className="w-full h-full flex-1 flex justify-center items-center"
@@ -37,11 +37,12 @@ const CreatePostPostAttachments = ({
                             setShowImage(true);
                             setImageIndex(0);
                             setPost(post);
+                            setCreate(true);
                           }}
                           className="w-[50%] flex-1 h-full relative"
                         >
                           <TouchableOpacity
-                            className="absolute w-[20px] h-[20px] top-[10px] right-[10px] z-10 bg-gray-800/50 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md"
+                            className="absolute w-[30px] h-[30px] top-[10px] right-[10px] z-10 bg-gray-800/70 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md"
                             onPress={() => {
                               onDelete(post.attachments[0], 0);
                             }}
@@ -50,7 +51,7 @@ const CreatePostPostAttachments = ({
                               <FontAwesome6 name="xmark" size={18} />
                             </Text>
                           </TouchableOpacity>
-                          <TouchableOpacity className="absolute w-[20px] h-[20px] top-[10px] right-[35px] z-10 bg-gray-800/50 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md">
+                          <TouchableOpacity className="absolute w-[30px] h-[30px] top-[10px] right-[45px] z-10 bg-gray-800/70 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md">
                             <Text className="text-gray-400">1</Text>
                           </TouchableOpacity>
                           <Image
@@ -59,6 +60,16 @@ const CreatePostPostAttachments = ({
                             }}
                             className=" h-full object-cover rounded-lg cursor-pointer"
                           />
+                          {attachmentsErrors?.map((error, index) => {
+                            parseInt(error.index) == 0 && (
+                              <View
+                                className="bg-red-500 text-white w-[200px] h-[50px] absolute bottom-[10px] left-[10px]"
+                                key={index}
+                              >
+                                {error.message}
+                              </View>
+                            );
+                          })}
                         </Pressable>
                       ) : (
                         <View
@@ -67,6 +78,7 @@ const CreatePostPostAttachments = ({
                             setShowImage(true);
                             setPost(post);
                             setImageIndex(0);
+                            setCreate(true);
                           }}
                         >
                           <FontAwesome name="file" size={24} color="black" />
@@ -82,8 +94,9 @@ const CreatePostPostAttachments = ({
                             else setShowImage(true);
                             setImageIndex(1);
                             setPost(post);
+                            setCreate(true);
                           }}
-                          className="w-[50%] flex-1 h-full relative overflow-hidden"
+                          className="w-[50%] flex-1 h-full relative overflow-hidden relative "
                         >
                           <Image
                             source={{
@@ -120,7 +133,7 @@ const CreatePostPostAttachments = ({
                           ) : (
                             <>
                               <TouchableOpacity
-                                className="absolute w-[20px] h-[20px] top-[10px] right-[10px] z-10 bg-gray-800/50 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md"
+                                className="absolute w-[30px] h-[30px] top-[10px] right-[10px] z-10 bg-gray-800/50 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md"
                                 onPress={() => {
                                   onDelete(post.attachments[1], 1);
                                 }}
@@ -129,19 +142,30 @@ const CreatePostPostAttachments = ({
                                   <FontAwesome6 name="xmark" size={18} />
                                 </Text>
                               </TouchableOpacity>
-                              <TouchableOpacity className="absolute w-[20px] h-[20px] top-[10px] right-[35px] z-10 bg-gray-800/50 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md">
+                              <TouchableOpacity className="absolute w-[30px] h-[30px] top-[10px] right-[45px] z-10 bg-gray-800/50 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md">
                                 <Text className="text-gray-400">2</Text>
                               </TouchableOpacity>
                             </>
                           )}
+                          {attachmentsErrors?.map((error, index) => {
+                            parseInt(error.index) == 1 && (
+                              <View
+                                className="bg-red-500 text-white w-[200px] h-[50px] absolute bottom-[10px] left-[10px]"
+                                key={index}
+                              >
+                                {error.message}
+                              </View>
+                            );
+                          })}
                         </Pressable>
                       ) : (
                         <View
                           className="w-[50%] relative flex-1 h-full object-cover rounded-lg cursor-pointer bg-gray-800 flex justify-center items-center flex-col gap-4"
                           onPress={() => {
-                            // setShowImage(true);
-                            // setPost(post);
-                            // setImageIndex(1);
+                            setShowImage(true);
+                            setPost(post);
+                            setImageIndex(1);
+                            setCreate(true);
                           }}
                         >
                           <FontAwesome name="file" size={24} color="black" />
@@ -184,12 +208,13 @@ const CreatePostPostAttachments = ({
                           setShowImage(true);
                           setImageIndex(0);
                           setPost(post);
+                          setCreate(true);
                         }}
                         className="w-full flex-1 relative"
                         style={{ height: 300 }}
                       >
                         <TouchableOpacity
-                          className="absolute w-[20px] h-[20px] top-[10px] right-[10px] z-10 bg-gray-800/50 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md"
+                          className="absolute w-[30px] h-[30px] top-[10px] right-[10px] z-10 bg-gray-800/50 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md"
                           onPress={() => {
                             onDelete(post.attachments[0], 0);
                           }}
@@ -198,7 +223,7 @@ const CreatePostPostAttachments = ({
                             <FontAwesome6 name="xmark" size={18} />
                           </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity className="absolute w-[20px] h-[20px] top-[10px] right-[35px] z-10 bg-gray-800/50 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md">
+                        <TouchableOpacity className="absolute w-[30px] h-[30px] top-[10px] right-[45px] z-10 bg-gray-800/50 border-gray-600/40 border-[1px] border-solid flex justify-center items-center rounded-md">
                           <Text className="text-gray-400">1</Text>
                         </TouchableOpacity>
                         <Image
@@ -207,6 +232,16 @@ const CreatePostPostAttachments = ({
                           }}
                           className="w-full h-full object-cover rounded-lg cursor-pointer"
                         />
+                        {attachmentsErrors?.map((error, index) => {
+                          parseInt(error.index) == 0 && (
+                            <View
+                              className="bg-red-500 text-white w-[200px] h-[50px] absolute bottom-[10px] left-[10px]"
+                              key={index}
+                            >
+                              {error.message}
+                            </View>
+                          );
+                        })}
                       </Pressable>
                     ) : (
                       <View
@@ -215,6 +250,7 @@ const CreatePostPostAttachments = ({
                           setShowImage(true);
                           setPost(post);
                           setImageIndex(0);
+                          setCreate(true);
                         }}
                       >
                         <FontAwesome name="file" size={24} color="black" />

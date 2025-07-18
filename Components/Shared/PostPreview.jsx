@@ -1,5 +1,7 @@
 import { FontAwesome6 } from "@expo/vector-icons";
-import { Image, Modal, ScrollView, Text, View } from "react-native";
+import { Modal, ScrollView, Text, View } from "react-native";
+import { usePostContext } from "../../Contexts/PostContext";
+import PostAttachmentCard from "../Cards/PostAttachmentCard";
 import SecondaryButton from "../Tools/SecondaryButton";
 import PostCardPostBody from "./PostCardPostBody";
 import PostOwnerInfo from "./PostOwnerInfo";
@@ -9,14 +11,11 @@ const PostPreview = ({
   update = false,
   attachmentsErrors,
   setShow,
-  setImage,
-  setShowImage,
-  setImageIndex,
   onDelete,
   undoDelete = () => {},
 }) => {
   // const { user } = useUserContext();
-
+  const { setShowImage, setImageIndex, setPost } = usePostContext();
   return (
     <Modal
       visible={show}
@@ -49,13 +48,19 @@ const PostPreview = ({
           }}
           scrollEnabled={true}
           automaticallyAdjustKeyboardInsets={true}
-          // nestedScrollEnabled={true}
         >
-          {post?.attachments?.map((image, index) => (
-            <Image
-              key={index}
-              source={{ uri: image.url }}
-              className="w-full h-[400px] object-cover rounded-md"
+          {post.attachments.map((attachment, index) => (
+            <PostAttachmentCard
+              post={post}
+              attachment={attachment}
+              attachmentsErrors={attachmentsErrors}
+              index={index}
+              onDelete={onDelete}
+              undoDelete={undoDelete}
+              update={update}
+              setImageIndex={setImageIndex}
+              setShowImage={setShowImage}
+              showActions={true}
             />
           ))}
         </ScrollView>
@@ -65,38 +70,3 @@ const PostPreview = ({
 };
 
 export default PostPreview;
-{
-  /* <View className="flex justify-between items-center w-full h-full bg-red-500">
-        
-        <SecondaryButton event={() => setShow(false)} classes="px-3 py-1.5">
-          <Text className="text-gray-400 ">
-            <FontAwesome6 name="xmark" size={24} />
-          </Text>
-        </SecondaryButton>
-      </View>
-      <PostCardPostBody content={post.body} />
-
-      {post.attachments && (
-        <>
-          <View
-            className={`w-full max-h-[500px] overflow-y-auto h-full flex gap-3 flex-col my-4`}
-          >
-            {post.attachments.map((attachment, index) => (
-              <View key={index} className="relative">
-                <PostAttachmentCard
-                  attachment={attachment}
-                  attachmentsErrors={attachmentsErrors}
-                  index={index}
-                  onDelete={onDelete}
-                  undoDelete={undoDelete}
-                  update={update}
-                  setImage={setImage}
-                  setImageIndex={setImageIndex}
-                  setShowImage={setShowImage}
-                />
-              </View>
-            ))}
-          </View>
-        </>
-      )} */
-}

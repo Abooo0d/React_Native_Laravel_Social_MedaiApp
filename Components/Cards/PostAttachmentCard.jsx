@@ -1,66 +1,59 @@
 import { EvilIcons, FontAwesome, FontAwesome6 } from "@expo/vector-icons";
-import { Image, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
+import { usePostContext } from "../../Contexts/PostContext";
 import SecondaryButton from "../Tools/SecondaryButton";
 
 const PostAttachmentCard = ({
+  post,
   index,
   attachment,
   attachmentsErrors,
   onDelete,
-  setImage,
-  setShowImage,
-  setImageIndex,
   showActions = true,
   update = false,
   undoDelete = () => {},
 }) => {
+  const { setImageIndex, setShowImage, setPost, setCreate } = usePostContext();
   const isImage = (attachment) => {
     let mime = attachment.type || attachment.mime;
     mime = mime ? mime.split("/") : "";
     return mime[0] === "image";
   };
   return (
-    <>
+    <View className="relative w-full h-[300px] rounded-md">
       {showActions && (
-        <>
-          <SecondaryButton
-            classes="absolute top-[10px] right-[10px] py-1.5 px-3 h-[40px]"
-            event={() => onDelete(attachment, index, update)}
-          >
-            <Text className="text-gray-400 ">
-              <FontAwesome6 name="xmark" size={24} />
-            </Text>
-          </SecondaryButton>
-          <SecondaryButton
-            event={() => {}}
-            classes={
-              "absolute right-[60px] top-[10px] px-3 py-1.5 h-[40px] cursor-default"
-            }
-          >
-            {index + 1}
-          </SecondaryButton>
-          {attachment.file && (
-            <SecondaryButton
-              event={() => {}}
-              classes="px-3 py-1.5 absolute top-[10px] right-[100px] h-[40px]"
-            >
-              new
-            </SecondaryButton>
-          )}
+        <View className="absolute top-[10px] right-[10px] z-10 flex flex-row justify-center items-center gap-2">
           {attachment.isDeleted && (
             <SecondaryButton
               event={() => {
                 undoDelete(attachment, update);
               }}
-              classes="absolute top-[60px] right-[10px] px-3 py-1.5 gap-2"
+              classes=" px-3 py-1.5 gap-2 h-[35px] "
             >
-              Deleted
+              <Text className="text-gray-400 ">Deleted</Text>
               <Text className="text-gray-400 ">
-                <EvilIcons name="redo" size={24} color="black" />
+                <EvilIcons name="redo" size={20} color="black" />
               </Text>
             </SecondaryButton>
           )}
-        </>
+          <SecondaryButton event={() => {}} classes={" px-3 py-1.5 h-[35px] "}>
+            <Text className="text-gray-400 ">{index + 1}</Text>
+          </SecondaryButton>
+          {attachment.file && (
+            <SecondaryButton event={() => {}} classes="px-3 py-1.5 h-[35px] ">
+              <Text className="text-gray-300">new</Text>
+            </SecondaryButton>
+          )}
+
+          <SecondaryButton
+            classes=" py-1.5 px-3 h-[35px]"
+            event={() => onDelete(attachment, index, update)}
+          >
+            <Text className="text-gray-400 ">
+              <FontAwesome6 name="xmark" size={20} />
+            </Text>
+          </SecondaryButton>
+        </View>
       )}
       {attachmentsErrors?.map((error, index) => {
         index == parseInt(error.index) && (
@@ -73,24 +66,29 @@ const PostAttachmentCard = ({
         );
       })}
       {isImage(attachment.file ? attachment.file : attachment) ? (
-        <View className="w-full h-full max-h-[500px]">
+        <Pressable
+          className="w-full h-[300px] max-h-[500px]"
+          onPress={() => {
+            setShowImage(true);
+            setImageIndex(index);
+            setPost(post);
+            setCreate(true);
+          }}
+        >
           <Image
             key={index}
             source={{ uri: attachment.url }}
             className=" h-full object-cover rounded-lg cursor-pointer"
-            onClick={() => {
-              setImage(attachment.url);
-              setShowImage(true);
-              setImageIndex(index);
-            }}
           />
-        </View>
+        </Pressable>
       ) : (
-        <View
+        <Pressable
           className="w-full min-h-[200px] h-full max-h-[500px] object-cover rounded-lg cursor-pointer bg-gray-800 flex justify-center items-center flex-col gap-4"
-          onClick={() => {
+          onPress={() => {
             setShowImage(true);
             setImageIndex(index);
+            setPost(post);
+            setCreate(true);
           }}
         >
           <Text className="text-gray-400">
@@ -99,7 +97,7 @@ const PostAttachmentCard = ({
           <Text className="text-gray-500 font-bold text-xl max-w-[80%] break-words text-center">
             {attachment?.file ? attachment?.file?.name : attachment?.name}
           </Text>
-        </View>
+        </Pressable>
       )}
       {attachmentsErrors?.map((error, inx) => (
         <View key={inx}>
@@ -110,7 +108,7 @@ const PostAttachmentCard = ({
           )}
         </View>
       ))}
-    </>
+    </View>
   );
 };
 

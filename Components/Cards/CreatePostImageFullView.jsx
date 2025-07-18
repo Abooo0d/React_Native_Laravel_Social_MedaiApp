@@ -2,14 +2,17 @@ import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
 import { useState } from "react";
 import { Image, Modal, Text, View } from "react-native";
-import { usePostContext } from "../../Contexts/PostContext";
-import { fullUrl, isImage } from "../../Functions/Functions";
+import { useMainContext } from "../../Contexts/MainContext";
+import { isImage } from "../../Functions/Functions";
 import SecondaryButton from "../Tools/SecondaryButton";
-import { useMainContext } from "./../../Contexts/MainContext";
-const ImageFullView = ({ update }) => {
-  const { showImage, setShowImage, imageIndex, setImageIndex, post, create } =
-    usePostContext();
-
+const CreatePostImageFullView = ({
+  update,
+  showImage,
+  setShowImage,
+  imageIndex,
+  setImageIndex,
+  post,
+}) => {
   const [attachmentId, setAttachmentId] = useState(0);
   const { setSuccessMessage } = useMainContext();
   const next = (index) => {
@@ -56,7 +59,6 @@ const ImageFullView = ({ update }) => {
 
   return (
     <Modal visible={showImage} animationType="slide" transparent={true}>
-      {/* <View className="w-full h-full px-4 py-4 bg-gray-900 flex justify-start items-start relative"> */}
       <View
         className={`flex relative min-h-[100vh] max-h-[100vh] min-w-[100vw] z-10 justify-center items-center overflow-hidden bg px-40 bg-gray-900`}
       >
@@ -94,31 +96,18 @@ const ImageFullView = ({ update }) => {
           className="relative w-full h-full flex justify-center items-center z-10 min-w-[100vw]"
           style={{
             paddingHorizontal: 20,
-            // width: "100%",
           }}
         >
           {post?.attachments && (
             <>
               {isImage(post?.attachments[imageIndex] ?? {}) ? (
-                <>
-                  {create ? (
-                    <Image
-                      source={{
-                        uri: post?.attachments[imageIndex]?.url ?? "",
-                      }}
-                      alt="Post Image"
-                      className={`w-full h-[400px] object-contain rounded-[10px]`}
-                    />
-                  ) : (
-                    <Image
-                      source={{
-                        uri: fullUrl(post?.attachments[imageIndex]?.url) ?? "",
-                      }}
-                      alt="Post Image"
-                      className={`w-full h-[400px] object-contain rounded-[10px]`}
-                    />
-                  )}
-                </>
+                <Image
+                  source={{
+                    uri: post?.attachments[imageIndex]?.url ?? "",
+                  }}
+                  alt="Post Image"
+                  className={`w-full h-[400px] object-contain rounded-[10px]`}
+                />
               ) : (
                 <View
                   className={`w-[400px] h-[400px] rounded-lg cursor-default bg-gray-800 flex justify-center items-center flex-col gap-4  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] duration-200 `}
@@ -139,4 +128,4 @@ const ImageFullView = ({ update }) => {
   );
 };
 
-export default ImageFullView;
+export default CreatePostImageFullView;

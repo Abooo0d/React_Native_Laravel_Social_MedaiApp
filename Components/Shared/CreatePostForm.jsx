@@ -5,25 +5,22 @@ import { Modal, Text, TextInput, View } from "react-native";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
+import { usePostContext } from "../../Contexts/PostContext";
 import { useUserContext } from "../../Contexts/UserContext";
 import PrimaryButton from "../Tools/PrimaryButton";
 import SecondaryButton from "../Tools/SecondaryButton";
 import CreatePostPostAttachments from "./CreatePostPostAttachments";
+
 import PostPreview from "./PostPreview";
 const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
-  const [image, setImage] = useState("");
-  const [showImage, setShowImage] = useState("");
+  const { setImageIndex, setShowImage } = usePostContext();
   const [showPost, setShowPost] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [imageIndex, setImageIndex] = useState();
   const [attachmentsErrors, setAttachmentsErrors] = useState([]);
   const [loadingAi, setLoadingAi] = useState(false);
   const { user } = useUserContext();
   const [chosenFiles, setChosenFiles] = useState([]);
   const { setErrors, setSuccessMessage } = useMainContext();
-  const [singleFile, setSingleFile] = useState(null);
-  const [multipleFiles, setMultipleFiles] = useState([]);
-  const [post, setPost] = useState({
+  const [post, setLocalPost] = useState({
     body: "",
     attachments: [],
     user_id: user.id,
@@ -149,7 +146,7 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
           message: post.body,
         })
         .then(({ data }) => {
-          setPost({ ...post, body: data.message });
+          setLocalPost({ ...post, body: data.message });
           setLoadingAi(false);
         })
         .catch((error) => {
@@ -165,13 +162,18 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
   };
 
   useEffect(() => {
-    setPost({ body: "", attachments: [], user_id: user.id, group_id: groupId });
+    setLocalPost({
+      body: "",
+      attachments: [],
+      user_id: user.id,
+      group_id: groupId,
+    });
     setChosenFiles([]);
     setAttachmentsErrors([]);
   }, [showForm]);
 
   useEffect(() => {
-    setPost((prevPost) => {
+    setLocalPost((prevPost) => {
       return {
         ...prevPost,
         attachments: chosenFiles,
@@ -218,7 +220,7 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
                 multiline
                 textAlignVertical="top"
                 onChangeText={(text) =>
-                  setPost((prev) => ({
+                  setLocalPost((prev) => ({
                     ...prev,
                     body: text,
                   }))
@@ -227,15 +229,11 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
             </View>
           </View>
           <CreatePostPostAttachments
-            setPost={setPost}
-            pickImage={pickImage}
-            post={post}
             attachmentsErrors={attachmentsErrors}
             onDelete={onDelete}
-            setImage={setImage}
-            setShowImage={setShowImage}
+            pickImage={pickImage}
+            post={post}
             setShowPost={setShowPost}
-            setImageIndex={setImageIndex}
           />
           <View className="mt-4 gap-2 flex flex-row justify-end items-center w-full">
             {post.attachments?.length > 0 && (
@@ -271,9 +269,7 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
         update={false}
         attachmentsErrors={attachmentsErrors}
         onDelete={onDelete}
-        // undoDelete={undoDelete}
         setShow={setShowPost}
-        setImage={setImage}
         setShowImage={setShowImage}
         setImageIndex={setImageIndex}
       />
