@@ -13,6 +13,8 @@ const PostsContainer = ({ posts, refetch }) => {
     <ScrollView
       scrollEnabled
       nestedScrollEnabled={true}
+      showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={false}
       contentContainerStyle={{
         flexGrow: 1,
         justifyContent: "flex-start",

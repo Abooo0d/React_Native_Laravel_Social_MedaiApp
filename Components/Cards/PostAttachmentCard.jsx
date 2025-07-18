@@ -44,7 +44,6 @@ const PostAttachmentCard = ({
               <Text className="text-gray-300">new</Text>
             </SecondaryButton>
           )}
-
           <SecondaryButton
             classes=" py-1.5 px-3 h-[35px]"
             event={() => onDelete(attachment, index, update)}
@@ -99,8 +98,8 @@ const PostAttachmentCard = ({
           </Text>
         </Pressable>
       )}
-      {attachmentsErrors?.map((error, inx) => (
-        <View key={inx}>
+      {attachmentsErrors?.map((error, index) => (
+        <View key={index}>
           {index == parseInt(error.index) && (
             <View className="bg-red-600/80 backdrop-blur-md rounded-md flex justify-center items-center absolute bottom-[10px] left-[10px] text-white w-[150px] h-[40px] cursor-default">
               <Text className="text-white"> {error.message}</Text>

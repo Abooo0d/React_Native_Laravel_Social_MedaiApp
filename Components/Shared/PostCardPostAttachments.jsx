@@ -4,8 +4,14 @@ import { Image, Pressable, Text, View } from "react-native";
 import { usePostContext } from "../../Contexts/PostContext.jsx";
 import { fullUrl, isImage } from "../../Functions/Functions.js";
 const PostCardPostAttachments = ({ post }) => {
-  const { setShowImage, showImage, setShowPost, setImageIndex, setPost } =
-    usePostContext();
+  const {
+    setShowImage,
+    showImage,
+    setShowPost,
+    setImageIndex,
+    setPost,
+    setCreate,
+  } = usePostContext();
 
   return (
     <>
@@ -24,6 +30,7 @@ const PostCardPostAttachments = ({ post }) => {
                         setShowImage(true);
                         setImageIndex(0);
                         setPost(post);
+                        setCreate(false);
                       }}
                       className="w-[50%] flex-1 h-full"
                     >
@@ -41,6 +48,7 @@ const PostCardPostAttachments = ({ post }) => {
                         setShowImage(true);
                         setPost(post);
                         setImageIndex(0);
+                        setCreate(false);
                       }}
                     >
                       <FontAwesome name="file" size={24} color="black" />
@@ -57,6 +65,7 @@ const PostCardPostAttachments = ({ post }) => {
                         else setShowImage(true);
                         setImageIndex(1);
                         setPost(post);
+                        setCreate(false);
                       }}
                       className="w-[50%] flex-1 h-full relative"
                     >
@@ -107,6 +116,7 @@ const PostCardPostAttachments = ({ post }) => {
                         setShowImage(true);
                         setPost(post);
                         setImageIndex(1);
+                        setCreate(false);
                       }}
                     >
                       <FontAwesome name="file" size={24} color="black" />
@@ -150,6 +160,7 @@ const PostCardPostAttachments = ({ post }) => {
                       setShowImage(true);
                       setImageIndex(0);
                       setPost(post);
+                      setCreate(false);
                     }}
                     className="w-full flex-1"
                     style={{ height: 300 }}
@@ -167,6 +178,7 @@ const PostCardPostAttachments = ({ post }) => {
                     onPress={() => {
                       setShowImage(true);
                       setPost(post);
+                      setCreate(false);
                       setImageIndex(0);
                     }}
                   >

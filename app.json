@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
-    "backgroundColor": "#ff0000",
+    "backgroundColor": "#050b1c",
     "scheme": "reactnativesocialmediaapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -15,7 +15,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo.png",
-        "backgroundColor": "#ff0000"
+        "backgroundColor": "#050b1c"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.ReactNativeSocialMediaApp"

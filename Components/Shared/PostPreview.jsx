@@ -61,6 +61,7 @@ const PostPreview = ({
               setImageIndex={setImageIndex}
               setShowImage={setShowImage}
               showActions={true}
+              key={index}
             />
           ))}
         </ScrollView>

@@ -15,9 +15,9 @@ export default function RootLayout() {
           <UserContext>
             <PostContext>
               <Slot />
+              <Notifications />
             </PostContext>
           </UserContext>
-          <Notifications />
         </MainContext>
       </QueryProvider>
     </View>

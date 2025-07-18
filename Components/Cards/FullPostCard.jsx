@@ -18,20 +18,26 @@ const FullPostCard = () => {
   } = usePostContext();
 
   return (
-    <Modal visible={showPost} animationType="slide" transparent={true}>
-      <View className="w-full h-full px-4 py-4 bg-gray-900 flex justify-start items-start relative">
-        <SecondaryButton
-          event={() => {
-            setShowPost(false);
-          }}
-          classes="px-2 py-2 absolute top-[20px] right-[20px]"
-        >
-          <Text className="text-gray-400">
-            <FontAwesome6 name="xmark" size={24} />
-          </Text>
-        </SecondaryButton>
-        <View className="flex flex-1 justify-between items-center w-full">
+    <Modal
+      visible={showPost}
+      animationType="slide"
+      transparent={true}
+      navigationBarTranslucent={true}
+      statusBarTranslucent={true}
+    >
+      <View className="w-full h-full px-4 pt-16 py-8 bg-gray-900 flex justify-start items-start relative">
+        <View className="flex flex-1 flex-row justify-between items-center w-full">
           <PostCardOwnerInfo post={post} user={user} />
+          <SecondaryButton
+            event={() => {
+              setShowPost(false);
+            }}
+            classes="px-2 py-2 "
+          >
+            <Text className="text-gray-400">
+              <FontAwesome6 name="xmark" size={24} />
+            </Text>
+          </SecondaryButton>
         </View>
         {post.body && <PostCardPostBody post={post} />}
         <ScrollView

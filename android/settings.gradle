@@ -1,4 +1,3 @@
-
 pluginManagement {
   def reactNativeGradlePlugin = new File(
     providers.exec {

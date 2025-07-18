@@ -1,5 +1,4 @@
 import { FontAwesome6 } from "@expo/vector-icons";
-
 import { useEffect, useState } from "react";
 import { Modal, Text, TextInput, View } from "react-native";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
@@ -7,10 +6,10 @@ import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { usePostContext } from "../../Contexts/PostContext";
 import { useUserContext } from "../../Contexts/UserContext";
+import Notifications from "../Shared/Notifications";
 import PrimaryButton from "../Tools/PrimaryButton";
 import SecondaryButton from "../Tools/SecondaryButton";
 import CreatePostPostAttachments from "./CreatePostPostAttachments";
-
 import PostPreview from "./PostPreview";
 const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
   const { setImageIndex, setShowImage } = usePostContext();
@@ -20,6 +19,7 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
   const { user } = useUserContext();
   const [chosenFiles, setChosenFiles] = useState([]);
   const { setErrors, setSuccessMessage } = useMainContext();
+  const [isLoading, setIsLoading] = useState(false);
   const [post, setLocalPost] = useState({
     body: "",
     attachments: [],
@@ -66,34 +66,42 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
 
   const handelSubmit = () => {
     try {
+      setIsLoading(true);
       if (post.body.trim() !== "" || post.attachments.length !== 0) {
         const formData = new FormData();
         formData.append("body", post.body);
         formData.append("user_id", post.user_id);
         formData.append("group_id", post.group_id);
-        // const finalFiles = chosenFiles.map((file) => {
-        //   return file.file;
-        // });
-        // finalFiles.forEach((file) => {
-        //   formData.append("attachments[]", file);
-        // });
+        chosenFiles.forEach((item, index) => {
+          formData.append("attachments[]", {
+            uri: item.file.uri,
+            name: item.file.fileName || `file_${index}.jpg`,
+            type: item.file.type || "image/jpeg",
+          });
+        });
+
         axiosClient
-          .post("/post", {
-            user_id: user.id,
-            group_id: post.group_id,
-            body: post.body,
+          .post("/post", formData, {
+            headers: {
+              // 'Authorization': 'Bearer YOUR_TOKEN',
+              // 'Accept': 'application/json',
+              "Content-Type": "multipart/form-data",
+            },
           })
           .then((data) => {
             setShowForm(false);
             refetch();
             setSuccessMessage(data?.data?.success);
+            setIsLoading(false);
           })
           .catch((err) => {
-            setShowForm(false);
             console.log(err);
+            console.log("Error Message:", err.message);
+            console.log("err Config:", err.config);
             setErrors([
               err?.response?.data?.message || "Some Thing Went Wrong",
             ]);
+            setIsLoading(false);
             setAttachmentsErrors([]);
             for (const key in e) {
               setAttachmentsErrors((prevErrors) => [
@@ -107,7 +115,9 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
           });
       }
     } catch (error) {
-      setShowForm(false);
+      setIsLoading(false);
+      setErrors(error);
+      console.log(error);
     }
   };
 
@@ -194,6 +204,7 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
         <View
           className={`flex relative my-auto min-h-[100vh] max-h-[100vh]  min-w-[100vw] z-10 justify-start p-4 items-start overflow-hidden gap-4 bg-gray-900`}
         >
+          <Notifications />
           <View className="flex flex-row justify-between items-center w-full">
             <View className="text-base/7 font-medium text-white">
               <Text className="text-base/7 font-medium text-white">
@@ -256,6 +267,7 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
               event={() => {
                 handelSubmit();
               }}
+              processing={isLoading}
             >
               <Text className="text-lg text-gray-300">Submit</Text>
             </PrimaryButton>
@@ -273,15 +285,6 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
         setShowImage={setShowImage}
         setImageIndex={setImageIndex}
       />
-      {/* <ImageFullView
-        image={image}
-        show={showImage}
-        imageIndex={imageIndex}
-        post={post}
-        setShowImage={setShowImage}
-        setImageIndex={setImageIndex}
-        update={false}
-      /> */}
     </>
   );
 };

@@ -12,6 +12,8 @@ const INITIAL_DATA = {
   setImageIndex: () => {},
   create: false,
   setCreate: () => {},
+  update: false,
+  setUpdate: () => {},
 };
 
 const Context = createContext(INITIAL_DATA);
@@ -22,6 +24,7 @@ export const PostContext = ({ children }) => {
   const [imageIndex, setImageIndex] = useState(0);
   const [user, setUser] = useState({});
   const [create, setCreate] = useState(false);
+  const [update, setUpdate] = useState(false);
   return (
     <Context.Provider
       value={{
@@ -37,6 +40,8 @@ export const PostContext = ({ children }) => {
         setImageIndex,
         create,
         setCreate,
+        update,
+        setUpdate,
       }}
     >
       {children}

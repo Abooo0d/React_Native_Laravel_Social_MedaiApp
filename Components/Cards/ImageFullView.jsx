@@ -6,9 +6,16 @@ import { usePostContext } from "../../Contexts/PostContext";
 import { fullUrl, isImage } from "../../Functions/Functions";
 import SecondaryButton from "../Tools/SecondaryButton";
 import { useMainContext } from "./../../Contexts/MainContext";
-const ImageFullView = ({ update }) => {
-  const { showImage, setShowImage, imageIndex, setImageIndex, post, create } =
-    usePostContext();
+const ImageFullView = () => {
+  const {
+    showImage,
+    setShowImage,
+    imageIndex,
+    setImageIndex,
+    post,
+    create,
+    update,
+  } = usePostContext();
 
   const [attachmentId, setAttachmentId] = useState(0);
   const { setSuccessMessage } = useMainContext();
@@ -94,7 +101,6 @@ const ImageFullView = ({ update }) => {
           className="relative w-full h-full flex justify-center items-center z-10 min-w-[100vw]"
           style={{
             paddingHorizontal: 20,
-            // width: "100%",
           }}
         >
           {post?.attachments && (
@@ -134,7 +140,6 @@ const ImageFullView = ({ update }) => {
           )}
         </View>
       </View>
-      {/* </View> */}
     </Modal>
   );
 };
