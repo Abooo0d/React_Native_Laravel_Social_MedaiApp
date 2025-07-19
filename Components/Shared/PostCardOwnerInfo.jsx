@@ -32,6 +32,9 @@ const PostCardOwnerInfo = ({ post }) => {
             </>
           )}
         </Text>
+        {post.create_at && (
+          <Text className="text-gray-500 text-sm">{post.create_at}</Text>
+        )}
       </View>
     </View>
   );

@@ -9,7 +9,6 @@ const PostsContainer = ({ posts, refetch, isLoading, children }) => {
     setAllData(posts?.posts);
     setAllPosts(posts?.posts?.data);
   }, [posts]);
-  // console.log(posts.posts.data.length);
 
   return (
     <ScrollView
@@ -31,7 +30,7 @@ const PostsContainer = ({ posts, refetch, isLoading, children }) => {
         <PostLoader />
       ) : (
         <>
-          {posts.posts?.data?.length > 0 ? (
+          {posts?.posts?.data?.length > 0 ? (
             <>
               {allPosts?.length > 0 ? (
                 <>
@@ -57,8 +56,10 @@ const PostsContainer = ({ posts, refetch, isLoading, children }) => {
             </>
           ) : (
             <>
-              <View className="w-full py-10 px-4">
-                <Text className="text-gray-600 text-sm">No Posts To Show</Text>
+              <View className="w-full py-4  px-4">
+                <Text className="text-gray-600 text-center">
+                  No Posts To Show
+                </Text>
               </View>
               <PostLoader />
             </>

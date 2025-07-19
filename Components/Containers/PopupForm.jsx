@@ -5,7 +5,7 @@ const PopupForm = ({ children, showForm }) => {
       intensity={50}
       blurReductionFactor={100}
       experimentalBlurMethod="dimezisBlurView"
-      className={`w-[90%] h-[200px] z-10 justify-start items-start absolute top-[95px] left-[5%] bg-gray-900/60 overflow-hidden rounded-md border-gray-900 border-solid border-[2px] p-0 ${
+      className={`w-[90%] h-[400px] z-10 justify-start items-start absolute top-[95px] left-[5%] bg-gray-900/60 overflow-hidden rounded-md border-gray-600/50 border-solid border-[1px] p-0 ${
         showForm ? "flex" : " hidden"
       } `}
     >

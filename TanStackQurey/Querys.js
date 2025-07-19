@@ -16,6 +16,7 @@ export const useGetPosts = () => {
           setErrors([
             error?.response?.data?.message || "Some Thing Went Wrong",
           ]);
+          console.log(error, "Abood");
         }),
   });
 };
@@ -25,7 +26,7 @@ export const useGetNotifications = () => {
     queryKey: [QUERY_KEYS.GET_NOTIFICATIONS],
     queryFn: () =>
       axiosClient
-        .get(route("getNotifications"))
+        .get("/get-notifications")
         .then(({ data }) => {
           return data;
         })

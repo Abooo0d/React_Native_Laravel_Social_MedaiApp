@@ -20,10 +20,10 @@ const PostLoader = () => {
           <View className="flex flex-col w-full my-8 py-4 px-4">
             <View className="space-y-2.5 animate-pulse max-w-lg">
               <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4 " />
-              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
-              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
-              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
-              <View className="w-[60%] h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
+              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-300 mb-4" />
+              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-400 mb-4" />
+              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-500 mb-4" />
+              <View className="w-[60%] h-[8px] rounded-full bg-gray-700 animate-pulse duration-600 mb-4" />
             </View>
           </View>
         </View>
@@ -45,10 +45,10 @@ const PostLoader = () => {
           <View className="flex flex-col w-full my-8 py-4 px-4">
             <View className="space-y-2.5 animate-pulse max-w-lg">
               <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4 " />
-              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
-              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
-              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
-              <View className="w-[60%] h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
+              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-300 mb-4" />
+              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-400 mb-4" />
+              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-500 mb-4" />
+              <View className="w-[60%] h-[8px] rounded-full bg-gray-700 animate-pulse duration-600 mb-4" />
             </View>
           </View>
         </View>
@@ -70,10 +70,10 @@ const PostLoader = () => {
           <View className="flex flex-col w-full my-8 py-4 px-4">
             <View className="space-y-2.5 animate-pulse max-w-lg">
               <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4 " />
-              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
-              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
-              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
-              <View className="w-[60%] h-[8px] rounded-full bg-gray-700 animate-pulse duration-200 mb-4" />
+              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-300 mb-4" />
+              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-400 mb-4" />
+              <View className="w-full h-[8px] rounded-full bg-gray-700 animate-pulse duration-500 mb-4" />
+              <View className="w-[60%] h-[8px] rounded-full bg-gray-700 animate-pulse duration-600 mb-4" />
             </View>
           </View>
         </View>
