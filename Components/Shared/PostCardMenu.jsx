@@ -6,9 +6,11 @@ import { Alert, Text, TouchableOpacity, View } from "react-native";
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
+import UpdatePostForm from "../Containers/UpdatePostForm";
 const PostCardMenu = ({ post, refetch }) => {
-  const [showForm, setShowForm] = useState();
+  const [showMenu, setShowMenu] = useState();
   const { setErrors, setSuccessMessage } = useMainContext();
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
   const { user } = useUserContext();
   const showUpdate = () => {
     return post.user.id === user?.id ? true : false;
@@ -46,12 +48,12 @@ const PostCardMenu = ({ post, refetch }) => {
     axiosClient
       .delete(`/post/${post.id}`)
       .then(() => {
-        setShowForm(false);
+        setShowMenu(false);
         setSuccessMessage("Post Deleted Successfully");
         refetch();
       })
       .catch((error) => {
-        setShowForm(false);
+        setShowMenu(false);
         setErrors([error?.response?.data?.message || "Some Thing Went Wrong"]);
       });
   };
@@ -59,13 +61,13 @@ const PostCardMenu = ({ post, refetch }) => {
     await Clipboard.setStringAsync(
       `http://192.168.1.107:8000/public/post/${post.id}`,
     );
-    setShowForm(false);
+    setShowMenu(false);
     // Alert.alert("Copied", "Text has been copied to your clipboard.");
   };
   return (
     <>
       <TouchableOpacity
-        onPress={() => setShowForm((prev) => !prev)}
+        onPress={() => setShowMenu((prev) => !prev)}
         className={`flex justify-center items-center w-[40px] h-[40px] duration-200 `}
       >
         <Entypo
@@ -75,7 +77,7 @@ const PostCardMenu = ({ post, refetch }) => {
           color={"#6b7280"}
         />
       </TouchableOpacity>
-      {showForm && (
+      {showMenu && (
         <View
           className={`absolute border-gray-700 border-[1px] border-solid top-[60px] right-[0px] z-10 bg-gray-800 w-[150px] duration-300 cursor-pointer rounded-md flex flex-col justify-start items-center overflow-hidden`}
         >
@@ -110,8 +112,8 @@ const PostCardMenu = ({ post, refetch }) => {
           {showUpdate() && (
             <TouchableOpacity
               onPress={() => {
-                setShowForm(true);
-                setOpenMenu(false);
+                setShowUpdateForm(true);
+                setShowMenu(false);
               }}
               className="bg-gray-800 duration-300 flex flex-row gap-2 justify-start items-start w-full py-2 px-4 text-sm font-medium text-gray-300 focus:outline-none text-left"
             >
@@ -140,6 +142,13 @@ const PostCardMenu = ({ post, refetch }) => {
           )}
         </View>
       )}
+      <UpdatePostForm
+        setShowForm={setShowUpdateForm}
+        showForm={showUpdateForm}
+        refetch={refetch}
+        user={post.user}
+        post={post}
+      />
     </>
   );
 };

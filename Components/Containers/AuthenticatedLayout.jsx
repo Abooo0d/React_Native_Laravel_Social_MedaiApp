@@ -195,14 +195,7 @@ const AuthenticatedLayout = () => {
                 router.replace("/pages/Chats");
               }}
             >
-              <Text className="text-gray-300 font-black">
-                {/* <Ionicons
-                  size={20}
-                  className="text-gray-300"
-                  name="chatbubbles"
-                /> */}
-                AI
-              </Text>
+              <Text className="text-gray-300 font-black">AI</Text>
             </TouchableOpacity>
           </View>
           <AuthMenu show={showAuthMenu} setShow={setShowAuthMenu} />

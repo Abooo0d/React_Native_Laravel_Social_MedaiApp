@@ -1,20 +1,26 @@
 import { Entypo } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import axiosClient from "../../Axios/AxiosClient";
+import { useUserContext } from "../../Contexts/UserContext";
 import { setShowNotificationsForm } from "../../Redux/publicSlice";
 import { useGetNotifications } from "../../TanStackQurey/Querys";
 import NotificationCard from "../Cards/NotificationCard";
 import SecondaryButton from "../Tools/SecondaryButton";
 const NotificationsForm = () => {
+  const { user } = useUserContext();
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const { data, refetch } = useGetNotifications();
+  const { data, refetch } = useGetNotifications(user);
   const showNotificationsForm = useSelector(
     (state) => state.public.showNotificationsForm,
   );
+  useEffect(() => {
+    if (!user) return;
+    refetch();
+  }, [user]);
   return (
     <BlurView
       intensity={50}

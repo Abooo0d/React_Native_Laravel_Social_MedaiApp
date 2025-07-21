@@ -27,7 +27,6 @@ const login = () => {
         let token = data.token;
         let user = data.user;
         await AsyncStorage.setItem("TOKEN", token);
-        console.log(token);
 
         setUser(user);
         setSuccessMessage(`Welcome ${user.name}`);

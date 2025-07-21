@@ -1,4 +1,5 @@
 import { BlurView } from "expo-blur";
+import { useEffect } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useUserContext } from "../../Contexts/UserContext";
@@ -6,10 +7,14 @@ import { setShowGroupsForm } from "../../Redux/publicSlice";
 import { useGetGroups } from "../../TanStackQurey/Querys";
 import GroupCard from "../Cards/GroupCard";
 const GroupsForm = () => {
-  const { data, isLoading } = useGetGroups();
   const { user } = useUserContext();
+  const { data, isLoading, refetch } = useGetGroups(user);
   const dispatch = useDispatch();
   const showGroupsForm = useSelector((state) => state.public.showGroupsForm);
+  useEffect(() => {
+    if (!user) return;
+    refetch();
+  }, [user]);
   return (
     <BlurView
       intensity={50}

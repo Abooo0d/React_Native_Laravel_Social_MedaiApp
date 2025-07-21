@@ -1,6 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { Image, Text, View } from "react-native";
+import { formatRelativeTime } from "../../Functions/Functions";
 
 const PostCardOwnerInfo = ({ post }) => {
   return (
@@ -32,9 +33,12 @@ const PostCardOwnerInfo = ({ post }) => {
             </>
           )}
         </Text>
-        {post.create_at && (
-          <Text className="text-gray-500 text-sm">{post.create_at}</Text>
-        )}
+        {/* {post.create_at && ( */}
+        <Text className="text-gray-500 text-sm">
+          {/* {post.create_at.slice(" ")[0]} */}
+          {formatRelativeTime(post.updated_at)}
+        </Text>
+        {/* )} */}
       </View>
     </View>
   );

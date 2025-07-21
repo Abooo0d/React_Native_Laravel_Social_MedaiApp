@@ -1,11 +1,12 @@
 import { Entypo } from "@expo/vector-icons";
 import { Pressable, ScrollView, Text, View } from "react-native";
-import CreatePostAttachmentCard from "../Cards/CreatePostAttachmentCard";
-const CreatePostPostAttachments = ({
-  attachmentsErrors,
-  pickImage,
-  onDelete,
+import UpdatePostAttachmentCard from "../Cards/UpdatePostAttachmentCard";
+const UpdatePostPostAttachments = ({
   post,
+  pickImage,
+  attachmentsErrors,
+  onDelete,
+  undoDelete,
 }) => {
   return (
     <>
@@ -26,9 +27,10 @@ const CreatePostPostAttachments = ({
               automaticallyAdjustKeyboardInsets={true}
             >
               {post?.attachments?.map((attachment, index) => (
-                <CreatePostAttachmentCard
+                <UpdatePostAttachmentCard
                   attachmentsErrors={attachmentsErrors}
                   attachment={attachment}
+                  undoDelete={undoDelete}
                   showActions={true}
                   onDelete={onDelete}
                   index={index}
@@ -60,4 +62,4 @@ const CreatePostPostAttachments = ({
   );
 };
 
-export default CreatePostPostAttachments;
+export default UpdatePostPostAttachments;

@@ -7,18 +7,17 @@ import { fullUrl, isImage } from "../../Functions/Functions";
 import SecondaryButton from "../Tools/SecondaryButton";
 import { useMainContext } from "./../../Contexts/MainContext";
 const ImageFullView = () => {
+  const [attachmentId, setAttachmentId] = useState(0);
+  const { setSuccessMessage } = useMainContext();
   const {
-    showImage,
-    setShowImage,
+    setShowImageFullView,
+    showImageFullView,
     imageIndex,
     setImageIndex,
     post,
     create,
     update,
   } = usePostContext();
-
-  const [attachmentId, setAttachmentId] = useState(0);
-  const { setSuccessMessage } = useMainContext();
   const next = (index) => {
     if (index < post?.attachments?.length - 1) {
       setImageIndex(index + 1);
@@ -63,14 +62,14 @@ const ImageFullView = () => {
 
   return (
     <Modal
-      visible={showImage}
+      visible={showImageFullView}
       animationType="slide"
       transparent={true}
       navigationBarTranslucent={true}
       statusBarTranslucent={true}
+      className="z-10"
     >
       <View className="w-full h-full bg-gray-900 flex justify-start items-start relative py-8">
-        {/* <View className="w-full h-full px-4 py-4 bg-gray-900 flex justify-start items-start relative"> */}
         <View
           className={`flex relative min-h-[100vh] max-h-[100vh] w-full h-full min-w-[100vw] z-10 justify-center items-center overflow-hidden bg pt-16 pb-8`}
         >
@@ -78,23 +77,14 @@ const ImageFullView = () => {
             <SecondaryButton
               classes=" py-1.5 px-3 right-0 w-[46px] cursor-default z-10"
               event={() => {
-                setShowImage(false);
+                setShowImageFullView(false);
               }}
             >
               <Text className="text-gray-400">
                 <FontAwesome6 name="xmark" size={24} />
               </Text>
             </SecondaryButton>
-            <SecondaryButton
-              classes=" py-1.5 px-3 right-0 w-[46px] cursor-default z-10"
-              event={() => {
-                downloadAttachment();
-              }}
-            >
-              <Text className="text-gray-400">
-                <FontAwesome name="download" size={24} />
-              </Text>
-            </SecondaryButton>
+
             <SecondaryButton
               classes=" py-1.5 px-3 right-0 w-[46px] cursor-default z-10"
               event={() => {}}
@@ -103,6 +93,20 @@ const ImageFullView = () => {
                 {imageIndex ? imageIndex + 1 : 1}
               </Text>
             </SecondaryButton>
+            {!!post?.attachments[imageIndex]?.file ? (
+              <></>
+            ) : (
+              <SecondaryButton
+                classes=" py-1.5 px-3 right-0 w-[46px] cursor-default z-10"
+                event={() => {
+                  downloadAttachment();
+                }}
+              >
+                <Text className="text-gray-400">
+                  <FontAwesome name="download" size={24} />
+                </Text>
+              </SecondaryButton>
+            )}
           </View>
           <View
             className="relative w-full h-full flex justify-center items-center z-10 min-w-[100vw]"
@@ -114,7 +118,7 @@ const ImageFullView = () => {
               <>
                 {isImage(post?.attachments[imageIndex] ?? {}) ? (
                   <>
-                    {create ? (
+                    {!!post?.attachments[imageIndex]?.file ? (
                       <Image
                         source={{
                           uri: post?.attachments[imageIndex]?.url ?? "",

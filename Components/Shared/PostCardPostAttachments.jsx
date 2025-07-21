@@ -5,12 +5,12 @@ import { usePostContext } from "../../Contexts/PostContext.jsx";
 import { fullUrl, isImage } from "../../Functions/Functions.js";
 const PostCardPostAttachments = ({ post }) => {
   const {
-    setShowImage,
-    showImage,
-    setShowPost,
+    setShowImageFullView,
+    setShowFullPostCard,
     setImageIndex,
     setPost,
     setCreate,
+    setUpdate,
   } = usePostContext();
 
   return (
@@ -27,10 +27,12 @@ const PostCardPostAttachments = ({ post }) => {
                   {isImage(post.attachments[0]) ? (
                     <Pressable
                       onPress={() => {
-                        setShowImage(true);
+                        setShowImageFullView(true);
+                        setShowFullPostCard(false);
                         setImageIndex(0);
                         setPost(post);
                         setCreate(false);
+                        setUpdate(false);
                       }}
                       className="w-[50%] flex-1 h-full"
                     >
@@ -45,10 +47,12 @@ const PostCardPostAttachments = ({ post }) => {
                     <View
                       className=" flex-1 h-full object-cover rounded-lg cursor-pointer bg-gray-800 flex justify-center items-center flex-col gap-4"
                       onPress={() => {
-                        setShowImage(true);
-                        setPost(post);
+                        setShowImageFullView(true);
+                        setShowFullPostCard(false);
                         setImageIndex(0);
+                        setPost(post);
                         setCreate(false);
+                        setUpdate(false);
                       }}
                     >
                       <FontAwesome name="file" size={24} color="black" />
@@ -61,8 +65,13 @@ const PostCardPostAttachments = ({ post }) => {
                   {isImage(post.attachments[1]) ? (
                     <Pressable
                       onPress={() => {
-                        if (post.attachments.length > 2) setShowPost(true);
-                        else setShowImage(true);
+                        if (post.attachments.length > 2) {
+                          setShowFullPostCard(true);
+                          setShowImageFullView(false);
+                        } else {
+                          setShowImageFullView(true);
+                          setShowFullPostCard(false);
+                        }
                         setImageIndex(1);
                         setPost(post);
                         setCreate(false);
@@ -76,15 +85,15 @@ const PostCardPostAttachments = ({ post }) => {
                         className=" h-full object-cover rounded-lg cursor-pointer"
                       />
                       {post?.attachments?.length > 2 && (
-                        <BlurView
+                        <View
                           intensity={30}
                           tint="dark"
                           blurReductionFactor={10}
                           experimentalBlurMethod="dimezisBlurView"
-                          className={`absolute top-0 left-0 w-full h-full flex justify-center items-center `}
+                          className={`absolute top-0 left-0 w-full h-full flex justify-center items-center bg-gray-700/50 `}
                         >
                           <View
-                            className=" rounded-full border-[1px] border-gray-400 border-solid px-10 flex justify-center items-center"
+                            className=" rounded-full border-[1px] border-gray-300 border-solid px-10 flex justify-center items-center"
                             style={{
                               height: 100,
                               width: 100,
@@ -93,10 +102,9 @@ const PostCardPostAttachments = ({ post }) => {
                             }}
                           >
                             <Text
-                              className=" font-bold "
+                              className=" font-bold text-gray-300"
                               style={{
                                 fontSize: 35,
-                                color: "#9ca3af",
                                 height: 100,
                                 width: 100,
                                 textAlign: "center",
@@ -106,17 +114,19 @@ const PostCardPostAttachments = ({ post }) => {
                               +{post.attachments.length - 2}
                             </Text>
                           </View>
-                        </BlurView>
+                        </View>
                       )}
                     </Pressable>
                   ) : (
                     <View
                       className="w-[50%] relative flex-1 h-full object-cover rounded-lg cursor-pointer bg-gray-800 flex justify-center items-center flex-col gap-4"
                       onPress={() => {
-                        setShowImage(true);
-                        setPost(post);
+                        setShowImageFullView(true);
+                        setShowFullPostCard(false);
                         setImageIndex(1);
+                        setPost(post);
                         setCreate(false);
+                        setUpdate(false);
                       }}
                     >
                       <FontAwesome name="file" size={24} color="black" />
@@ -157,10 +167,12 @@ const PostCardPostAttachments = ({ post }) => {
                 {isImage(post.attachments[0]) ? (
                   <Pressable
                     onPress={() => {
-                      setShowImage(true);
+                      setShowImageFullView(true);
+                      setShowFullPostCard(false);
                       setImageIndex(0);
                       setPost(post);
                       setCreate(false);
+                      setUpdate(false);
                     }}
                     className="w-full flex-1"
                     style={{ height: 300 }}
@@ -176,10 +188,12 @@ const PostCardPostAttachments = ({ post }) => {
                   <View
                     className="w-full flex-1 h-full object-cover rounded-lg cursor-pointer bg-gray-800 flex justify-center items-center flex-col gap-4"
                     onPress={() => {
-                      setShowImage(true);
+                      setShowImageFullView(true);
+                      setShowFullPostCard(false);
+                      setImageIndex(0);
                       setPost(post);
                       setCreate(false);
-                      setImageIndex(0);
+                      setUpdate(false);
                     }}
                   >
                     <Text className="text-gray-400">

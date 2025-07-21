@@ -34,7 +34,7 @@ const Notifications = () => {
             : " opacity-0 w-[0] "
         }`}
       >
-        {errors.map((error, index) => (
+        {errors?.map((error, index) => (
           <Text className="text-white text-lg font-bold" key={index}>
             {error}
           </Text>

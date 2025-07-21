@@ -2,12 +2,13 @@ import { useMainContext } from "@/Contexts/MainContext";
 import { useQuery } from "@tanstack/react-query";
 import axiosClient from "../Axios/AxiosClient";
 import { QUERY_KEYS } from "./QueryKeys";
-export const useGetPosts = () => {
+export const useGetPosts = (user) => {
   const { setErrors } = useMainContext();
   return useQuery({
     queryKey: [QUERY_KEYS.GET_POSTS],
-    queryFn: () =>
-      axiosClient
+    queryFn: async () => {
+      if (!user?.id) return Promise.resolve([]);
+      return axiosClient
         .get("/get-posts")
         .then(({ data }) => {
           return data;
@@ -16,16 +17,18 @@ export const useGetPosts = () => {
           setErrors([
             error?.response?.data?.message || "Some Thing Went Wrong",
           ]);
-          console.log(error, "Abood");
-        }),
+        });
+    },
+    enabled: !!user,
   });
 };
-export const useGetNotifications = () => {
+export const useGetNotifications = (user) => {
   const { setErrors } = useMainContext();
   return useQuery({
     queryKey: [QUERY_KEYS.GET_NOTIFICATIONS],
-    queryFn: () =>
-      axiosClient
+    queryFn: async () => {
+      if (!user?.id) return Promise.resolve([]);
+      return axiosClient
         .get("/get-notifications")
         .then(({ data }) => {
           return data;
@@ -34,16 +37,18 @@ export const useGetNotifications = () => {
           setErrors([
             error?.response?.data?.message || "Some Thing Went Wrong",
           ]);
-        }),
+        });
+    },
+    enabled: !!user,
   });
 };
 export const useGetGroups = (user) => {
   const { setErrors } = useMainContext();
   return useQuery({
     queryKey: [QUERY_KEYS.GET_GROUPS],
-    queryFn: () => {
-      if (!user?.id) return [];
-      axiosClient
+    queryFn: async () => {
+      if (!user?.id) return Promise.resolve([]);
+      return axiosClient
         .get(route("getGroups"))
         .then(({ data }) => {
           return data;
@@ -54,6 +59,7 @@ export const useGetGroups = (user) => {
           ]);
         });
     },
+    enabled: !!user,
   });
 };
 export const useGetChatGroups = () => {

@@ -56,11 +56,15 @@ const PostsContainer = ({ posts, refetch, isLoading, children }) => {
             </>
           ) : (
             <>
-              <View className="w-full py-4  px-4">
-                <Text className="text-gray-600 text-center">
-                  No Posts To Show
-                </Text>
-              </View>
+              {!!posts ? (
+                <></>
+              ) : (
+                <View className="w-full py-4  px-4">
+                  <Text className="text-gray-600 text-center">
+                    No Posts To Show
+                  </Text>
+                </View>
+              )}
               <PostLoader />
             </>
           )}
