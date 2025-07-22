@@ -1,5 +1,4 @@
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
-import * as FileSystem from "expo-file-system";
 import { useState } from "react";
 import { Image, Modal, Text, View } from "react-native";
 import { usePostContext } from "../../Contexts/PostContext";
@@ -15,9 +14,8 @@ const ImageFullView = () => {
     imageIndex,
     setImageIndex,
     post,
-    create,
-    update,
   } = usePostContext();
+
   const next = (index) => {
     if (index < post?.attachments?.length - 1) {
       setImageIndex(index + 1);
@@ -38,26 +36,22 @@ const ImageFullView = () => {
   };
 
   const downloadAttachment = async () => {
-    try {
-      const attachment = post?.attachments[imageIndex];
-      const fileUrl = `http://192.168.1.107:8000/api/post/download/${attachment.id}`;
-
-      const fileUri = FileSystem.documentDirectory + attachment.name;
-
-      const { uri } = await FileSystem.downloadAsync(fileUrl, fileUri);
-
-      // Optional: Share the file or open it
-      // if (await Sharing.isAvailableAsync()) {
-      //   await Sharing.shareAsync(uri);
-      // } else {
-      // alert("Download complete. File saved to device.");
-
-      setSuccessMessage("Download complete. File saved to device.");
-      // }
-    } catch (error) {
-      console.error("Error downloading file:", error);
-      alert("Failed to download file");
-    }
+    // try {
+    //   const attachment = post?.attachments[imageIndex || 0];
+    //   const fileUrl = `http://192.168.1.107:8000/api/post/download/${attachment.id}`;
+    //   const fileUri = FileSystem.documentDirectory + attachment.name;
+    //   const { uri } = await FileSystem.downloadAsync(fileUrl, fileUri);
+    //   // Optional: Share the file or open it
+    //   // if (await Sharing.isAvailableAsync()) {
+    //   //   await Sharing.shareAsync(uri);
+    //   // } else {
+    //   // alert("Download complete. File saved to device.");
+    //   setSuccessMessage("Download complete. File saved to device.");
+    //   // }
+    // } catch (error) {
+    //   console.error("Error downloading file:", error);
+    //   alert("Failed to download file");
+    // }
   };
 
   return (
@@ -85,15 +79,17 @@ const ImageFullView = () => {
               </Text>
             </SecondaryButton>
 
-            <SecondaryButton
-              classes=" py-1.5 px-3 right-0 w-[46px] cursor-default z-10"
-              event={() => {}}
-            >
-              <Text className="text-gray-400">
-                {imageIndex ? imageIndex + 1 : 1}
-              </Text>
-            </SecondaryButton>
-            {!!post?.attachments[imageIndex]?.file ? (
+            {!!imageIndex && (
+              <SecondaryButton
+                classes=" py-1.5 px-3 right-0 w-[46px] cursor-default z-10"
+                event={() => {}}
+              >
+                <Text className="text-gray-400">
+                  {imageIndex ? imageIndex + 1 : 1}
+                </Text>
+              </SecondaryButton>
+            )}
+            {post.attachments && post?.attachments[imageIndex]?.file ? (
               <></>
             ) : (
               <SecondaryButton
@@ -114,14 +110,14 @@ const ImageFullView = () => {
               paddingHorizontal: 20,
             }}
           >
-            {post?.attachments && (
+            {!!post?.attachments && (
               <>
                 {isImage(post?.attachments[imageIndex] ?? {}) ? (
                   <>
                     {!!post?.attachments[imageIndex]?.file ? (
                       <Image
                         source={{
-                          uri: post?.attachments[imageIndex]?.url ?? "",
+                          uri: post?.attachments[imageIndex]?.url || "",
                         }}
                         alt="Post Image"
                         className={`w-full h-[400px] object-contain rounded-[10px]`}
@@ -130,7 +126,7 @@ const ImageFullView = () => {
                       <Image
                         source={{
                           uri:
-                            fullUrl(post?.attachments[imageIndex]?.url) ?? "",
+                            fullUrl(post?.attachments[imageIndex]?.url) || "",
                         }}
                         alt="Post Image"
                         className={`w-full h-[400px] object-contain rounded-[10px]`}
@@ -142,9 +138,9 @@ const ImageFullView = () => {
                     className={`w-[400px] h-[400px] rounded-lg cursor-default bg-gray-800 flex justify-center items-center flex-col gap-4  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] duration-200 `}
                   >
                     <Text className="text-gray-500 font-bold text-xl max-w-[80%] break-words text-center">
-                      {(post.attachments[imageIndex]?.file ?? "")
-                        ? (post.attachments[imageIndex]?.file?.name ?? "")
-                        : (post.attachments[imageIndex]?.name ?? "")}
+                      {post?.attachments[imageIndex]?.file || ""
+                        ? post?.attachments[imageIndex]?.file?.name || ""
+                        : post?.attachments[imageIndex]?.name || ""}
                     </Text>
                   </View>
                 )}
