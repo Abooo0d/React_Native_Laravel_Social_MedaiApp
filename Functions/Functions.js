@@ -87,7 +87,7 @@ const formatBytes = (bytes, decimals = 2) => {
   }
   return parseFloat(size.toFixed(dm)) + " " + sizes[i];
 };
-const BASE_URL = "http://192.168.1.107:8000";
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const fullUrl = (path) => `${BASE_URL}${path}`;
 export {

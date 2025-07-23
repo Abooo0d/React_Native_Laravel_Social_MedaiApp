@@ -113,13 +113,13 @@ export const useGetPostsForGroup = (groupId) => {
         }),
   });
 };
-export const useGetPostsForUser = (userId) => {
+export const useGetPostsForUser = (username) => {
   const { setErrors } = useMainContext();
   return useQuery({
     queryKey: [QUERY_KEYS.GET_POSTS_FOR_USER],
     queryFn: () =>
       axiosClient
-        .get(route("postsForUser", userId))
+        .get(`profile/posts/${username}`)
         .then(({ data }) => {
           return data;
         })
@@ -128,5 +128,27 @@ export const useGetPostsForUser = (userId) => {
             error?.response?.data?.message || "Some Thing Went Wrong",
           ]);
         }),
+    enabled: !!username,
+  });
+};
+export const useGetUser = (username) => {
+  const { setErrors } = useMainContext();
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USER],
+    queryFn: async () => {
+      if (!username) return Promise.resolve({});
+      return axiosClient
+        .get(`/profile/${username}`)
+        .then(({ data }) => {
+          return data;
+        })
+        .catch((error) => {
+          setErrors([
+            error?.response?.data?.message || "Some Thing Went Wrong",
+          ]);
+          return {};
+        });
+    },
+    enabled: !!username,
   });
 };

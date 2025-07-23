@@ -2,7 +2,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { Image, Pressable, Text, View } from "react-native";
 import { usePostContext } from "../../Contexts/PostContext.jsx";
-import { fullUrl, isImage } from "../../Functions/Functions.js";
+import { isImage } from "../../Functions/Functions.js";
 const PostCardPostAttachments = ({ post }) => {
   const {
     setShowImageFullView,
@@ -38,7 +38,7 @@ const PostCardPostAttachments = ({ post }) => {
                     >
                       <Image
                         source={{
-                          uri: fullUrl(post.attachments[0].url),
+                          uri: post.attachments[0].url,
                         }}
                         className=" h-full object-cover rounded-lg cursor-pointer"
                       />
@@ -80,7 +80,7 @@ const PostCardPostAttachments = ({ post }) => {
                     >
                       <Image
                         source={{
-                          uri: fullUrl(post.attachments[1].url),
+                          uri: post.attachments[1].url,
                         }}
                         className=" h-full object-cover rounded-lg cursor-pointer"
                       />
@@ -179,7 +179,7 @@ const PostCardPostAttachments = ({ post }) => {
                   >
                     <Image
                       source={{
-                        uri: fullUrl(post.attachments[0].url),
+                        uri: post.attachments[0].url,
                       }}
                       className="w-full h-full object-cover rounded-lg cursor-pointer"
                     />

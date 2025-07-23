@@ -2,7 +2,7 @@ import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Image, Modal, Pressable, ScrollView, Text, View } from "react-native";
 import { usePostContext } from "../../Contexts/PostContext";
-import { fullUrl, isImage } from "../../Functions/Functions";
+import { isImage } from "../../Functions/Functions";
 import PostCardOwnerInfo from "../Shared/PostCardOwnerInfo";
 import PostCardPostBody from "../Shared/PostCardPostBody";
 import SecondaryButton from "../Tools/SecondaryButton";
@@ -17,7 +17,6 @@ const FullPostCard = () => {
     setCreate,
     setUpdate,
   } = usePostContext();
-
   return (
     <>
       <Modal
@@ -67,7 +66,7 @@ const FullPostCard = () => {
                   >
                     <Image
                       source={{
-                        uri: fullUrl(attachment.url),
+                        uri: attachment.url,
                       }}
                       className="w-full h-full object-cover rounded-lg cursor-pointer"
                     />

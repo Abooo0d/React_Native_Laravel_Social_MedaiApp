@@ -9,7 +9,6 @@ const PostsContainer = ({ posts, refetch, isLoading, children }) => {
     setAllData(posts?.posts);
     setAllPosts(posts?.posts?.data);
   }, [posts]);
-
   return (
     <ScrollView
       scrollEnabled

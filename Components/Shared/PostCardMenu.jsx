@@ -59,7 +59,7 @@ const PostCardMenu = ({ post, refetch }) => {
   };
   const copyToClipBoard = async () => {
     await Clipboard.setStringAsync(
-      `http://192.168.1.107:8000/public/post/${post.id}`,
+      `http://192.168.1.109:8000/public/post/${post.id}`,
     );
     setShowMenu(false);
     // Alert.alert("Copied", "Text has been copied to your clipboard.");

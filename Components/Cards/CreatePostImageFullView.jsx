@@ -37,7 +37,7 @@ const CreatePostImageFullView = ({
   const downloadAttachment = async () => {
     try {
       const attachment = post?.attachments[imageIndex];
-      const fileUrl = `http://192.168.1.107:8000/api/post/download/${attachment.id}`;
+      const fileUrl = `${process.env.EXPO_PUBLIC_API_URL}/post/download/${attachment.id}`;
 
       const fileUri = FileSystem.documentDirectory + attachment.name;
 

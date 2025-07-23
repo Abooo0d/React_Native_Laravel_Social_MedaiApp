@@ -1,4 +1,5 @@
 import { FontAwesome } from "@expo/vector-icons";
+import { Link } from "expo-router";
 import { useState } from "react";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import axiosClient from "../../Axios/AxiosClient";
@@ -64,7 +65,15 @@ const SubCommentCard = ({ comment, setMainComment }) => {
             className=" rounded-full w-[40px] h-[40px] "
           />
           <View className="flex flex-col justify-start items-start gap-1">
-            <Text className="text-gray-400">{currentComment.user.name}</Text>
+            <Link
+              href={
+                user?.id == currentComment.user.id
+                  ? "/pages/MyProfile"
+                  : `/pages/Profile${currentComment.user.username}`
+              }
+            >
+              <Text className="text-gray-400">{currentComment.user.name}</Text>
+            </Link>
             <View className="text-gray-700 text-[12px]">
               <Text className="text-gray-700 text-[12px]">
                 {currentComment.updated_at}

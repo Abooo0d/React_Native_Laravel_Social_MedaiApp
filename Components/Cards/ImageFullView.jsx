@@ -2,7 +2,7 @@ import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { useState } from "react";
 import { Image, Modal, Text, View } from "react-native";
 import { usePostContext } from "../../Contexts/PostContext";
-import { fullUrl, isImage } from "../../Functions/Functions";
+import { isImage } from "../../Functions/Functions";
 import SecondaryButton from "../Tools/SecondaryButton";
 import { useMainContext } from "./../../Contexts/MainContext";
 const ImageFullView = () => {
@@ -36,22 +36,22 @@ const ImageFullView = () => {
   };
 
   const downloadAttachment = async () => {
-    // try {
-    //   const attachment = post?.attachments[imageIndex || 0];
-    //   const fileUrl = `http://192.168.1.107:8000/api/post/download/${attachment.id}`;
-    //   const fileUri = FileSystem.documentDirectory + attachment.name;
-    //   const { uri } = await FileSystem.downloadAsync(fileUrl, fileUri);
-    //   // Optional: Share the file or open it
-    //   // if (await Sharing.isAvailableAsync()) {
-    //   //   await Sharing.shareAsync(uri);
-    //   // } else {
-    //   // alert("Download complete. File saved to device.");
-    //   setSuccessMessage("Download complete. File saved to device.");
-    //   // }
-    // } catch (error) {
-    //   console.error("Error downloading file:", error);
-    //   alert("Failed to download file");
-    // }
+    try {
+      const attachment = post?.attachments[imageIndex || 0];
+      const fileUrl = `${process.env.EXPO_PUBLIC_API_URL}/post/download/${attachment.id}`;
+      const fileUri = FileSystem.documentDirectory + attachment.name;
+      const { uri } = await FileSystem.downloadAsync(fileUrl, fileUri);
+      // Optional: Share the file or open it
+      // if (await Sharing.isAvailableAsync()) {
+      //   await Sharing.shareAsync(uri);
+      // } else {
+      // alert("Download complete. File saved to device.");
+      setSuccessMessage("Download complete. File saved to device.");
+      // }
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      alert("Failed to download file");
+    }
   };
 
   return (
@@ -125,8 +125,7 @@ const ImageFullView = () => {
                     ) : (
                       <Image
                         source={{
-                          uri:
-                            fullUrl(post?.attachments[imageIndex]?.url) || "",
+                          uri: post?.attachments[imageIndex]?.url || "",
                         }}
                         alt="Post Image"
                         className={`w-full h-[400px] object-contain rounded-[10px]`}

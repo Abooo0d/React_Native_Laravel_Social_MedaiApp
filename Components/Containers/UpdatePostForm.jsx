@@ -37,13 +37,21 @@ const UpdatePostForm = ({ post, showForm, setShowForm, refetch }) => {
       formData.append("user_id", finalPost.user.id);
       formData.append("group_id", finalPost.group ? finalPost.group.id : "");
       const ids = finalPost.deletedFilesIds;
+
       ids.forEach((id) => {
         formData.append("deletedFilesIds[]", id);
       });
       const attachments = finalPost.attachments;
-      attachments.forEach((attachment) => {
-        formData.append("attachments[]", attachment);
+      console.log(attachments);
+
+      attachments.forEach((attachment, index) => {
+        formData.append("attachments[]", {
+          uri: attachment.uri,
+          name: attachment.fileName || `file_${index}.jpg`,
+          type: attachment.type || "image/jpeg",
+        });
       });
+
       if (finalPost.body !== "" || finalPost.attachments.length !== 0) {
         axiosClient
           .post(`/post/${post.id}`, formData, {
@@ -134,8 +142,6 @@ const UpdatePostForm = ({ post, showForm, setShowForm, refetch }) => {
   };
 
   const onDelete = (attachment, index, update) => {
-    console.log("Abood");
-
     if (attachment.file) {
       setPostData((prevPost) => ({
         ...prevPost,
@@ -264,13 +270,13 @@ const UpdatePostForm = ({ post, showForm, setShowForm, refetch }) => {
                 <Text className="text-lg text-gray-300">Add Images</Text>
               </SecondaryButton>
             )}
-            <SecondaryButton
+            <PrimaryButton
               classes="flex justify-center items-center text-gray-400 py-1.5 px-3"
               event={aiPost}
               processing={loadingAi}
             >
-              <Text className="text-lg text-gray-300">Post From AI</Text>
-            </SecondaryButton>
+              <Text className="text-lg text-gray-300">AI Post</Text>
+            </PrimaryButton>
             <PrimaryButton
               classes={"py-1.5 px-3"}
               event={() => {

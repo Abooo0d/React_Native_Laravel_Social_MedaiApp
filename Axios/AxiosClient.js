@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 // Add a request interceptor
 const axiosClient = axios.create({
-  baseURL: "http://192.168.1.107:8000/api",
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
   withCredentials: true,
   headers: {
     Accept: "application/json",

@@ -17,11 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
-import {
-  setShowFriendsForm,
-  setShowGroupsForm,
-  setShowNotificationsForm,
-} from "../../Redux/publicSlice";
+import { toggleForm } from "../../Redux/publicSlice";
 import { useGetNotifications } from "../../TanStackQurey/Querys";
 import FullPostCard from "../Cards/FullPostCard";
 import ImageFullView from "../Cards/ImageFullView";
@@ -59,25 +55,6 @@ const AuthenticatedLayout = () => {
       }
     }
   }, [notifications, LoadingNotifications]);
-
-  // useEffect(() => {
-  //   if (showGroups) {
-  //     setShowNotifications(false);
-  //     setShowFriends(false);
-  //   }
-  // }, [showGroups]);
-  // useEffect(() => {
-  //   if (showNotifications) {
-  //     setShowGroups(false);
-  //     setShowFriends(false);
-  //   }
-  // }, [showNotifications]);
-  // useEffect(() => {
-  //   if (showFriends) {
-  //     setShowNotifications(false);
-  //     setShowGroups(false);
-  //   }
-  // }, [showFriends]);
 
   const getUser = () => {
     axiosClient
@@ -121,7 +98,8 @@ const AuthenticatedLayout = () => {
                   : " bg-transparent border-transparent"
               }`}
               onPress={() => {
-                dispatch(setShowGroupsForm(!showGroupsForm));
+                // dispatch(setShowGroupsForm(!showGroupsForm));
+                dispatch(toggleForm("groups"));
               }}
             >
               <Text className="text-gray-300">
@@ -139,7 +117,8 @@ const AuthenticatedLayout = () => {
                   : " bg-transparent border-transparent"
               }`}
               onPress={() => {
-                dispatch(setShowFriendsForm(!showFriendsForm));
+                // dispatch(setShowFriendsForm(!showFriendsForm));
+                dispatch(toggleForm("friends"));
               }}
             >
               <Text className="text-gray-300">
@@ -157,7 +136,8 @@ const AuthenticatedLayout = () => {
                   : " bg-transparent border-transparent"
               }`}
               onPress={() => {
-                dispatch(setShowNotificationsForm(!showNotificationsForm));
+                // dispatch(setShowNotificationsForm(!showNotificationsForm));
+                dispatch(toggleForm("notifications"));
               }}
             >
               {notificationsCount > 0 && (

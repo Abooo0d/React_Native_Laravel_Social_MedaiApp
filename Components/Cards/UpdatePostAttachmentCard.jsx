@@ -1,7 +1,6 @@
 import { EvilIcons, FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { Image, Pressable, Text, View } from "react-native";
 import { usePostContext } from "../../Contexts/PostContext";
-import { fullUrl } from "../../Functions/Functions";
 import SecondaryButton from "../Tools/SecondaryButton";
 const UpdatePostAttachmentCard = ({
   showActions = true,
@@ -86,7 +85,7 @@ const UpdatePostAttachmentCard = ({
           ) : (
             <Image
               source={{
-                uri: fullUrl(post?.attachments[index]?.url) ?? "",
+                uri: post?.attachments[index]?.url ?? "",
               }}
               alt="Post Image"
               className={`w-full h-[300px] object-contain rounded-[10px]`}

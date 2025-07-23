@@ -251,13 +251,13 @@ const CreatePostForm = ({ showForm, setShowForm, groupId = "", refetch }) => {
                 <Text className="text-lg text-gray-300">Add Images</Text>
               </SecondaryButton>
             )}
-            <SecondaryButton
+            <PrimaryButton
               classes="flex justify-center items-center text-gray-400 py-1.5 px-3"
               event={aiPost}
               processing={loadingAi}
             >
-              <Text className="text-lg text-gray-300">Post From AI</Text>
-            </SecondaryButton>
+              <Text className="text-lg text-gray-300">AI Post</Text>
+            </PrimaryButton>
             <PrimaryButton
               classes={"py-1.5 px-3"}
               event={() => {

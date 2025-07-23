@@ -7,6 +7,7 @@ import PostsContainer from "./../../../Components/Containers/PostsContainer.jsx"
 const Home = () => {
   const { user } = useUserContext();
   const { data: posts, refetch, isLoading: loadingPosts } = useGetPosts(user);
+
   useEffect(() => {
     if (!user) return;
     refetch();

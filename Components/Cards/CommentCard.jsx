@@ -1,4 +1,5 @@
 import { FontAwesome } from "@expo/vector-icons";
+import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import axiosClient from "../../Axios/AxiosClient";
@@ -94,7 +95,15 @@ const CommentCard = ({ currentComment, post, setPost }) => {
               className=" rounded-full w-[40px] h-[40px] "
             />
             <View className="flex flex-col  justify-start items-start gap-1">
-              <Text className="text-gray-400">{comment.user.name}</Text>
+              <Link
+                href={
+                  user?.id == comment.user.id
+                    ? "/pages/MyProfile"
+                    : `/pages/Profile/${comment.user.username}`
+                }
+              >
+                <Text className="text-gray-400">{comment.user.name}</Text>
+              </Link>
               <Text className="text-gray-700 text-[12px]">
                 {comment.updated_at}
               </Text>

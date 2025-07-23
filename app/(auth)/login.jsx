@@ -34,7 +34,8 @@ const login = () => {
         setIsLoadingLogin(false);
       })
       .catch((error) => {
-        console.log(error?.response?.data?.message);
+        console.log(error.config);
+
         setErrors([
           error?.response?.data?.message || "Some Thing Wrong happened",
         ]);

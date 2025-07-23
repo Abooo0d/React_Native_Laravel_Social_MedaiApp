@@ -7,7 +7,6 @@ import { Text, TouchableOpacity, View } from "react-native";
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
-// import { router } from "expo-router";
 
 const AuthMenu = ({ show, setShow }) => {
   const router = useRouter();
@@ -59,7 +58,12 @@ const AuthMenu = ({ show, setShow }) => {
               {user?.email}
             </Text>
           </View>
-          <TouchableOpacity className="flex justify-center items-start w-full h-[40px] px-4 ">
+          <TouchableOpacity
+            className="flex justify-center items-start w-full h-[40px] px-4 "
+            onPress={() => {
+              router.push("/pages/MyProfile");
+            }}
+          >
             <Text className="text-gray-300 text-lg ">Profile</Text>
           </TouchableOpacity>
           <TouchableOpacity
