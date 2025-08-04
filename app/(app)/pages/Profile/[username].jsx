@@ -1,32 +1,22 @@
-import { useHeaderHeight } from "@react-navigation/elements";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  Dimensions,
-  Image,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import PostContainer from "../../../../Components/Containers/PostsContainer";
+import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import PostCard from "../../../../Components/Cards/PostCard";
+import PostLoader from "../../../../Components/Tools/PostLoader";
 import ProfileLoader from "../../../../Components/Tools/ProfileLoader";
 import {
   useGetPostsForUser,
   useGetUser,
 } from "../../../../TanStackQurey/Querys";
 const Profile = () => {
-  const { top, bottom } = useSafeAreaInsets();
-  const headerHeight = useHeaderHeight();
-  const screenHeight = Dimensions.get("window").height;
-  const availableHeight = screenHeight - top - bottom - headerHeight;
   const [currentUser, setCurrentUser] = useState({});
   const [isFriend, setIsFriend] = useState(false);
   const [photos, setPhotos] = useState([]);
-  const [posts, setPosts] = useState({});
+  const [allData, setAllData] = useState([]);
+  const [allPosts, setAllPosts] = useState([]);
   const [tab, setTab] = useState("posts");
   const { username } = useLocalSearchParams();
+
   const { data: user, refetch, isLoading, isFetched } = useGetUser(username);
   const {
     data: postsData,
@@ -42,20 +32,24 @@ const Profile = () => {
   }, [user]);
 
   useEffect(() => {
-    setPosts(postsData);
+    setAllData(postsData?.posts);
+    setAllPosts(postsData?.posts?.data);
     setPhotos(postsData?.photos);
   }, [postsData]);
+
   return (
     <ScrollView
-      className="w-full bg-red-500"
-      stye={{ height: availableHeight }}
+      className="w-full h-fit bg-homeFeed "
       contentContainerStyle={{
         width: "100%",
         flexGrow: 1,
+        height: "auto",
         display: "flex",
         justifyContent: "flex-start",
         alignItems: "center",
+        gap: 8,
       }}
+      nestedScrollEnabled={true}
       showsVerticalScrollIndicator={false}
     >
       {isLoading ? (
@@ -71,9 +65,9 @@ const Profile = () => {
               className="absolute top-[170px] left-[20px] w-[120px] h-[120px] rounded-full z-10"
               source={{ uri: currentUser?.avatar_url }}
             />
-            <View className="bg-gray-900 flex flex-col px-10 py-2 pl-[150px] border-b-[1px] border-b-gray-700/50 border-b-solid">
+            <View className="bg-gray-900 flex flex-col px-10 py-2 pl-[160px] border-b-[1px] border-b-gray-700/50 border-b-solid">
               <Text className="text-gray-300 text-2xl font-bold mb-2">
-                {currentUser.email}
+                {currentUser.name}
               </Text>
               <Text className="text-gray-500 text-[20px] font-bold ">
                 {currentUser.email}
@@ -101,7 +95,6 @@ const Profile = () => {
               <Pressable
                 onPress={() => {
                   setTab("photos");
-                  console.log(tab);
                 }}
               >
                 <View
@@ -132,13 +125,61 @@ const Profile = () => {
             </View>
           </View>
           <View
-            className={`w-full h-full ${tab == "posts" ? "visible" : "invisible"}`}
+            className={`w-full h-fit ${tab == "posts" ? "visible" : "invisible"} flex flex-col gap-[8px]`}
           >
-            <PostContainer
-              isLoading={isLoadingPosts}
-              posts={posts}
-              refetch={refetchPosts}
-            />
+            {isLoadingPosts ? (
+              <PostLoader />
+            ) : (
+              <>
+                {postsData?.posts && (
+                  <>
+                    {postsData?.posts?.data?.length > 0 ? (
+                      <>
+                        {allPosts?.length > 0 ? (
+                          <>
+                            {allPosts?.length > 0 &&
+                              allPosts?.map((post, index) => (
+                                <PostCard
+                                  post={post}
+                                  key={index}
+                                  refetch={refetch}
+                                />
+                              ))}
+                            {allData?.meta?.current_page <
+                            allData?.meta?.last_page ? (
+                              <View className="w-full flex justify-center items-center">
+                                <ActivityIndicator
+                                  size="large"
+                                  color="#6b7280"
+                                />
+                              </View>
+                            ) : (
+                              <View className="w-full py-4 px-4 flex justify-center items-center ">
+                                <Text className="text-gray-600">
+                                  No More Posts
+                                </Text>
+                              </View>
+                            )}
+                          </>
+                        ) : (
+                          <PostLoader />
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {!!!postsData && (
+                          <View className="w-full py-4  px-4">
+                            <Text className="text-gray-600 text-center">
+                              No Posts To Show
+                            </Text>
+                          </View>
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
+              </>
+            )}
           </View>
           <View
             className={`w-full h-full ${tab == "photos" ? "visible" : "invisible"} bg-red-900 px-2 py-2 flex flex-col gap-2`}
@@ -150,15 +191,6 @@ const Profile = () => {
                 className="w-full max-h-[250px] rounded-md "
               />
             ))}
-          </View>
-          <View
-            className={`w-full h-full ${tab == "posts" ? "visible" : "invisible"}`}
-          >
-            <PostContainer
-              isLoading={isLoadingPosts}
-              posts={posts}
-              refetch={refetchPosts}
-            />
           </View>
         </>
       )}

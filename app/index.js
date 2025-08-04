@@ -21,7 +21,7 @@ export default function Index() {
   return (
     <View className="bg-homeFeed flex-1 justify-center items-center gap-4">
       <Image
-        source={require("../assets/images/logo.png")}
+        source={require("../assets/images/Logo.png")}
         className="w-[120px] h-[120px] object-contain "
       />
       <Text className="text-gray-400 text-3xl font-bold">LaraChat</Text>

@@ -86,7 +86,7 @@ const AuthenticatedLayout = () => {
         <View className="flex flex-row justify-between items-end flex-1 px-4 pt-4 mb-2">
           <TouchableOpacity onPress={() => router.replace("/pages/Home")}>
             <Image
-              source={require("../../assets/images/logo.png")}
+              source={require("../../assets/images/Logo.png")}
               className="w-[35px] h-[35px] ml-[10px] object-contain "
             />
           </TouchableOpacity>

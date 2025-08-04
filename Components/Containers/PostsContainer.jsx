@@ -17,6 +17,7 @@ const PostsContainer = ({ posts, refetch, isLoading, children }) => {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
         flexGrow: 1,
+        maxHeight: "auto",
         justifyContent: "flex-start",
         alignItems: "flex-start",
         gap: 6,
