@@ -29,7 +29,7 @@ const Notifications = () => {
       </View>
       <View
         className={`bg-red-500/40 backdrop-blur-sm border-[2px] border-solid border-red-500 border-r-[0px] text-white absolute top-[200px] right-0 z-[1000] h-[60px] flex justify-center items-center px-4 rounded-l-md duration-300 flex-col cursor-default ${
-          ShowNotification && errors.length > 0
+          ShowNotification && errors?.length > 0
             ? "opacity-100 w-[400px] "
             : " opacity-0 w-[0] "
         }`}
