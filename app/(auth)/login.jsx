@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Switch, Text, View } from "react-native";
-import { fetch } from "react-native-ssl-pinning";
+import axiosClient from "../../Axios/AxiosClient";
 import AuthForm from "../../Components/Containers/AuthForm";
 import CustomInput from "../../Components/Tools/CustomInput";
 import PrimaryButton from "../../Components/Tools/PrimaryButton";
@@ -20,26 +20,30 @@ const login = () => {
   const { setUser } = useUserContext();
   const { setErrors, setSuccessMessage } = useMainContext();
   const login = async () => {
-    const token = await AsyncStorage.getItem("TOKEN");
-    setIsLoadingLogin(true);
-    fetch("https://192.168.1.109:8000/api/login-mobile", {
-      method: "POST",
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-      timeoutInterval: 30000,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      sslPinning: {
-        certs: ["mycert"], // no extension
-      },
-    })
-      .then((res) => res.json())
-      .then(async (data) => {
+    // const token = await AsyncStorage.getItem("TOKEN");
+    // setIsLoadingLogin(true);
+    // fetch("https://192.168.1.109:8000/api/login-mobile", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     email: email,
+    //     password: password,
+    //   }),
+    //   timeoutInterval: 30000,
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    //   sslPinning: {
+    //     certs: ["mycert"], // no extension
+    //   },
+    // })
+    //   .then((res) => res.json())
+    console.log("ABood");
+
+    axiosClient
+      .post("/login-mobile", { email: email, password: password })
+      .then(async ({ data }) => {
         let token = data.token;
         let user = data.user;
         await AsyncStorage.setItem("TOKEN", token);
@@ -50,31 +54,13 @@ const login = () => {
         setIsLoadingLogin(false);
       })
       .catch((error) => {
+        console.log(error.config);
+
         setErrors([
           error?.response?.data?.message || "Some Thing Wrong happened",
         ]);
         setIsLoadingLogin(false);
       });
-
-    // axiosClient
-    //   .post("/login-mobile", { email: email, password: password })
-    //   .then(async ({ data }) => {
-    //     let token = data.token;
-    //     let user = data.user;
-    //     await AsyncStorage.setItem("TOKEN", token);
-
-    //     setUser(user);
-    //     setSuccessMessage(`Welcome ${user.name}`);
-    //     router.replace("/pages/Home");
-    //     setIsLoadingLogin(false);
-    //   })
-    //   .catch((error) => {
-    //
-    //     setErrors([
-    //       error?.response?.data?.message || "Some Thing Wrong happened",
-    //     ]);
-    //     setIsLoadingLogin(false);
-    //   });
   };
 
   const CheckForUser = async () => {

@@ -87,7 +87,7 @@ const AuthenticatedLayout = () => {
           <TouchableOpacity onPress={() => router.replace("/pages/Home")}>
             <Image
               source={require("../../assets/images/Logo.png")}
-              className="w-[35px] h-[35px] ml-[10px] object-contain "
+              className="w-[45px] h-[45px] ml-[10px] object-contain "
             />
           </TouchableOpacity>
           <View className="flex flex-row justify-evenly items-center flex-1 mx-4">
@@ -98,7 +98,6 @@ const AuthenticatedLayout = () => {
                   : " bg-transparent border-transparent"
               }`}
               onPress={() => {
-                // dispatch(setShowGroupsForm(!showGroupsForm));
                 dispatch(toggleForm("groups"));
               }}
             >
