@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import { useEffect } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useUserContext } from "../../Contexts/UserContext";
 import { setShowGroupsForm } from "../../Redux/publicSlice";
@@ -13,7 +13,7 @@ const GroupsForm = () => {
   const showGroupsForm = useSelector((state) => state.public.showGroupsForm);
   useEffect(() => {
     if (!user) return;
-    refetch();
+    refetch(user);
   }, [user]);
   return (
     <BlurView
@@ -46,9 +46,10 @@ const GroupsForm = () => {
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
       >
-        {data?.length > 0 ? (
+        {isLoading && <ActivityIndicator size="large" color="#6b7280" />}
+        {data?.groups?.length > 0 ? (
           <>
-            {data?.map((group, index) => (
+            {data?.groups?.map((group, index) => (
               <GroupCard
                 data={group}
                 setShowGroupContainer={() =>

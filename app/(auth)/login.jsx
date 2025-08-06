@@ -39,7 +39,6 @@ const login = () => {
     //   },
     // })
     //   .then((res) => res.json())
-    console.log("ABood");
 
     axiosClient
       .post("/login-mobile", { email: email, password: password })

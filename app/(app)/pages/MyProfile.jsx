@@ -156,7 +156,6 @@ const MyProfile = () => {
     setAllPosts(postsData?.posts?.data);
     setPhotos(postsData?.photos);
   }, [postsData]);
-  console.log(user);
 
   return (
     <>
@@ -500,7 +499,7 @@ const MyProfile = () => {
             </View>
           )}
           {tab == "requests" && (
-            <View className={`w-full h-fit flex flex-col gap-[8px] px-2 pb-8`}>
+            <View className={`w-full h-full flex flex-col gap-[8px] px-4 pb-8`}>
               {user?.pending_requests?.length > 0 ? (
                 <>
                   {user?.pending_requests.map((request, index) => (

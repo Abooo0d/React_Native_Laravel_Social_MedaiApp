@@ -29,6 +29,7 @@ const PostCardOwnerInfo = ({ post }) => {
               {post.user?.name}
             </Link>
           )}
+
           {post && (
             <>
               {post.group && (

@@ -1,6 +1,6 @@
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
+import { capitalizeFirstLetter } from "../../Functions/Functions";
 
 const GroupCard = ({ data, setShowGroupContainer }) => {
   const router = useRouter();
@@ -12,17 +12,17 @@ const GroupCard = ({ data, setShowGroupContainer }) => {
       }}
     >
       <View
-        className={`min-h-[100px] w-full relative gap-3 duration-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer bg-gray-100 dark:bg-gray-800 rounded-[10px] group overflow-hidden `}
+        className={`min-h-[100px] min-w-full relative gap-3 duration-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer bg-red-800 rounded-[10px] group overflow-hidden `}
         // href={route("group.profile", data.slug)}
       >
         <Image
-          source={{ uti: data.cover_url }}
+          source={{ uri: data.cover_url }}
           alt="groupCoverImage"
-          className="absolute top-0 left-0 right-0 bottom-0 max-h-full h-full w-[100%] object-cover z-0 rounded-[10px]"
+          className="absolute inset-0 w-[full] h-[100px] object-cover z-0"
         />
-        <View className="z-10 bg-black/30 backdrop-blur-sm w-[100%] h-[100%] py-2 px-4 rounded-[10px] overflow-hidden absolute inset-0 flex flex-col gap-2 justify-between items-start">
+        <View className="z-10 bg-gray-900/50 py-2 px-4 rounded-[10px] overflow-hidden absolute top-0 left-0 w-full h-full flex flex-col justify-start items-start gap-2">
           <View
-            className={`absolute top-[10px] right-[10px] backdrop-blur-md border-[1px] border-solid pl-[6px] px-[5px] py-[2px] rounded-sm text-gray-300 text-[10px] group-hover:opacity-100 opacity-0 duration-200
+            className={`absolute top-[10px] right-[10px] backdrop-blur-md border-[1px] border-solid pl-[6px] px-[5px] py-[2px] rounded-sm text-gray-300 text-[10px] duration-200
         ${
           data.status === "approved"
             ? data.role === "admin"
@@ -32,11 +32,13 @@ const GroupCard = ({ data, setShowGroupContainer }) => {
         }
         `}
           >
-            {data.status === "approved"
-              ? capitalizeFirstLetter(data.role)
-              : capitalizeFirstLetter(data.status)}
+            <Text className="text-gray-300">
+              {data.status === "approved"
+                ? capitalizeFirstLetter(data.role)
+                : capitalizeFirstLetter(data.status)}
+            </Text>
           </View>
-          <View className="flex gap-2 w-full justify-start items-center">
+          <View className="flex flex-row gap-2 w-fit justify-center items-center">
             <Image
               source={{ uri: data.thumbnail_url }}
               alt="groupeThumbnailImage"

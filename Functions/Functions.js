@@ -88,9 +88,12 @@ const formatBytes = (bytes, decimals = 2) => {
   return parseFloat(size.toFixed(dm)) + " " + sizes[i];
 };
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
-
+function capitalizeFirstLetter(string) {
+  return string?.charAt(0).toUpperCase() + string?.slice(1);
+}
 const fullUrl = (path) => `${BASE_URL}${path}`;
 export {
+  capitalizeFirstLetter,
   formatBytes,
   formatRelativeTime,
   fullUrl,

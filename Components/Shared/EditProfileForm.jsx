@@ -22,7 +22,7 @@ const EditProfileForm = ({ user }) => {
           email: email,
         })
         .then(({ data }) => {
-          setIsLoading(true);
+          setIsLoading(false);
           setUser(data.user);
           setSuccessMessage(data.message);
         })

@@ -1,6 +1,13 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import FriendUserCard from "../../../../Components/Cards/FriendUserCard";
 import PostCard from "../../../../Components/Cards/PostCard";
 import ProfileImageFullView from "../../../../Components/Cards/ProfileImageFullView";

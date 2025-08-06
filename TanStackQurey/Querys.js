@@ -47,9 +47,9 @@ export const useGetGroups = (user) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_GROUPS],
     queryFn: async () => {
-      if (!user?.id) return Promise.resolve([]);
+      if (!!!user) return Promise.resolve([]);
       return axiosClient
-        .get(route("getGroups"))
+        .get("/get-groups")
         .then(({ data }) => {
           return data;
         })

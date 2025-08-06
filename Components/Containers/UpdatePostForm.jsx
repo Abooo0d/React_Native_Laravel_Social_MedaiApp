@@ -179,8 +179,6 @@ const UpdatePostForm = ({ post, showForm, setShowForm, refetch }) => {
   };
 
   const undoDelete = (attachment, update) => {
-    console.log("delete");
-
     setPostData((prevPost) => ({
       ...prevPost,
       attachments: prevPost.attachments.map((f) => ({
