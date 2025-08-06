@@ -38,7 +38,7 @@ const AuthMenu = ({ show, setShow }) => {
         className={`flex justify-center items-center w-[40px] h-[40px] duration-200`}
       >
         <Text className="text-gray-300 w-full h-full ">
-          <Entypo size={40} className="text-gray-300 " name="menu" />
+          <Entypo size={44} className="text-gray-300 " name="menu" />
         </Text>
       </TouchableOpacity>
       {show && (

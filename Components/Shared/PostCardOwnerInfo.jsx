@@ -16,7 +16,7 @@ const PostCardOwnerInfo = ({ post }) => {
         className="w-[60px] h-[60px] min-w-[60px] rounded-full border-[1px] border-gray-600/50 hover:border-gray-600 duration-200 object-cover"
       />
       <View className="flex flex-col gap-0 ">
-        <Text className=" flex justify-start items-center dark:text-gray-400 lg:text-[18px] text-[16px] text-gray-900 duration-200">
+        <Text className=" flex justify-start items-center gap-2 dark:text-gray-400 lg:text-[18px] text-[16px] text-gray-900 duration-200">
           {post?.user && (
             <Link
               href={
@@ -33,8 +33,9 @@ const PostCardOwnerInfo = ({ post }) => {
             <>
               {post.group && (
                 <>
-                  <Text>
-                    <FontAwesome name="angle-right" size={24} color="black" />
+                  <Text className="text-gray-500">
+                    {" "}
+                    <FontAwesome name="angle-right" size={20} />{" "}
                   </Text>
                   <Link href={"/pages/Home"}>{post.group.name}</Link>
                 </>

@@ -11,16 +11,20 @@ import {
 } from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
 import axiosClient from "../../../Axios/AxiosClient";
+import FriendRequestCard from "../../../Components/Cards/FriendRequestCard";
 import FriendUserCard from "../../../Components/Cards/FriendUserCard";
 import PostCard from "../../../Components/Cards/PostCard";
 import ProfileImageFullView from "../../../Components/Cards/ProfileImageFullView";
+import ChangePasswordForm from "../../../Components/Shared/ChangePasswordForm";
+import DeleteAccountForm from "../../../Components/Shared/DeleteAccountForm";
+import EditProfileForm from "../../../Components/Shared/EditProfileForm";
 import PostLoader from "../../../Components/Tools/PostLoader";
 import { useMainContext } from "../../../Contexts/MainContext";
 import { useUserContext } from "../../../Contexts/UserContext";
 import { useGetPostsForUser } from "../../../TanStackQurey/Querys";
-
 const MyProfile = () => {
   const { user, setUser } = useUserContext();
+
   const { setErrors, setSuccessMessage } = useMainContext();
   const [isLoadingCoverImage, setIsLoadingCoverImage] = useState(false);
   const [isLoadingAvatarImage, setIsLoadingAvatarImage] = useState(false);
@@ -152,6 +156,7 @@ const MyProfile = () => {
     setAllPosts(postsData?.posts?.data);
     setPhotos(postsData?.photos);
   }, [postsData]);
+  console.log(user);
 
   return (
     <>
@@ -359,6 +364,36 @@ const MyProfile = () => {
                   <Text className="text-gray-400">Friends</Text>
                 </View>
               </Pressable>
+              <Pressable
+                onPress={() => {
+                  setTab("requests");
+                }}
+              >
+                <View
+                  className={`py-2 px-3 border-b-gray-700/50 border-b-solid border-b-[2px] ${
+                    tab == "requests"
+                      ? "border-b-gray-700/50"
+                      : "border-transparent"
+                  }`}
+                >
+                  <Text className="text-gray-400">Requests</Text>
+                </View>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setTab("about");
+                }}
+              >
+                <View
+                  className={`py-2 px-3 border-b-gray-700/50 border-b-solid border-b-[2px] ${
+                    tab == "about"
+                      ? "border-b-gray-700/50"
+                      : "border-transparent"
+                  }`}
+                >
+                  <Text className="text-gray-400">About</Text>
+                </View>
+              </Pressable>
             </View>
           </View>
           {tab == "posts" && (
@@ -420,28 +455,72 @@ const MyProfile = () => {
           )}
           {tab == "friends" && (
             <View className={`w-full h-fit flex flex-col gap-[8px] px-2 pb-8`}>
-              {user.friends?.map((friend, index) => (
-                <FriendUserCard friend={friend} key={index} />
-              ))}
+              {user?.friends?.length > 0 ? (
+                <>
+                  {user.friends?.map((friend, index) => (
+                    <FriendUserCard friend={friend} key={index} />
+                  ))}
+                </>
+              ) : (
+                <View className="w-full py-4 px-4 flex justify-center items-center ">
+                  <Text className="text-gray-600">
+                    You Don`t Have Friends Yet.
+                  </Text>
+                </View>
+              )}
             </View>
           )}
           {tab == "photos" && (
             <View className={`w-full h-fit flex flex-col gap-[8px] px-2 pb-8`}>
-              {photos?.map((image, index) => (
-                <Pressable
-                  onPress={() => {
-                    setImage(image);
-                    setShowImageFullView(true);
-                  }}
-                  key={index}
-                  className="flex min-w-full min-h-[250px] max-h-[250px] rounded-md overflow-hidden"
-                >
-                  <Image
-                    source={{ uri: image.url }}
-                    className="min-w-full max-h-[250px] min-h-[250px] rounded-md"
-                  />
-                </Pressable>
-              ))}
+              {photos?.length > 0 ? (
+                <>
+                  {photos?.map((image, index) => (
+                    <Pressable
+                      onPress={() => {
+                        setImage(image);
+                        setShowImageFullView(true);
+                      }}
+                      key={index}
+                      className="flex min-w-full min-h-[250px] max-h-[250px] rounded-md overflow-hidden"
+                    >
+                      <Image
+                        source={{ uri: image.url }}
+                        className="min-w-full max-h-[250px] min-h-[250px] rounded-md"
+                      />
+                    </Pressable>
+                  ))}
+                </>
+              ) : (
+                <View className="w-full py-4 px-4 flex justify-center items-center ">
+                  <Text className="text-gray-600">
+                    You Don`t Have Any Photos
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
+          {tab == "requests" && (
+            <View className={`w-full h-fit flex flex-col gap-[8px] px-2 pb-8`}>
+              {user?.pending_requests?.length > 0 ? (
+                <>
+                  {user?.pending_requests.map((request, index) => (
+                    <FriendRequestCard request={request} key={index} />
+                  ))}
+                </>
+              ) : (
+                <View className="w-full py-4 px-4 flex justify-center items-center">
+                  <Text className="text-gray-600">
+                    You Don`t Have Friends Requests.
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
+          {tab == "about" && (
+            <View className="flex gap-2 pb-8 w-full">
+              <EditProfileForm user={user} />
+              <ChangePasswordForm user={user} />
+              <DeleteAccountForm user={user} />
             </View>
           )}
         </>

@@ -24,7 +24,7 @@ export default function Index() {
         source={require("../assets/images/Logo.png")}
         className="w-[120px] h-[120px] object-contain "
       />
-      <Text className="text-gray-400 text-3xl font-bold">LaraChat</Text>
+      <Text className="text-gray-400 text-3xl font-bold">Chatter</Text>
     </View>
   );
 }
