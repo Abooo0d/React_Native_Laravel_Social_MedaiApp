@@ -19,6 +19,7 @@ import ProfileImageFullView from "../../../../Components/Cards/ProfileImageFullV
 import DeleteGroupForm from "../../../../Components/Shared/DeleteGroupForm";
 import EditGroupInfoForm from "../../../../Components/Shared/EditGroupInfoForm";
 import PostLoader from "../../../../Components/Tools/PostLoader";
+import PrimaryButton from "../../../../Components/Tools/PrimaryButton";
 import ProfileLoader from "../../../../Components/Tools/ProfileLoader";
 import { useMainContext } from "../../../../Contexts/MainContext";
 import {
@@ -58,6 +59,7 @@ const GroupProfile = () => {
   const [thumbnailImage, setThumbnailImage] = useState({});
   const [isTheCoverChanged, setIsTheCoverChanged] = useState(false);
   const [isThumbnailChanged, setIsThumbnailChanged] = useState(false);
+  const [showInviteForm, setShowInviteForm] = useState(false);
 
   const changeCoverImage = () => {
     launchImageLibrary(
@@ -82,8 +84,6 @@ const GroupProfile = () => {
       setIsLoadingCoverImage(true);
       if (!isTheCoverChanged) return;
       const formData = new FormData();
-      console.log(group.id);
-
       formData.append("group_id", group.id);
       formData.append("coverImage", {
         uri: coverImage.uri,
@@ -137,7 +137,6 @@ const GroupProfile = () => {
       if (!isThumbnailChanged) return;
       const formData = new FormData();
       formData.append("group_id", group.id);
-      console.log(group.id);
       formData.append("avatarImage", {
         uri: thumbnailImage.uri,
         name: thumbnailImage.fileName || `file_${index}.jpg`,
@@ -166,6 +165,19 @@ const GroupProfile = () => {
       setIsLoadingAvatarImage(false);
     }
   };
+
+  const requestJoin = () => {
+    axiosClient
+      .post(`/group/join/${group.slug}`)
+      .then(({ data }) => {
+        setSuccessMessage(data.message);
+        setGroup(data.group);
+      })
+      .catch((e) => {
+        setErrors([e?.response?.data?.message || "Some Thing Went Wrong"]);
+      });
+  };
+
   useEffect(() => {
     setAllData(postsData?.posts);
     setAllPosts(postsData?.posts?.data);
@@ -348,13 +360,43 @@ const GroupProfile = () => {
                   }}
                 />
               </Pressable>
-              <View className="bg-gray-900 flex flex-col px-10 py-2 pl-8 border-b-[1px] border-b-gray-700/50 border-b-solid">
-                <Text className="text-gray-300 text-2xl font-bold mb-2">
-                  {group?.name}
-                </Text>
-                <Text className="text-gray-500 text-[20px] font-bold ">
-                  {group?.about}
-                </Text>
+              <View className="bg-gray-900 flex flex-row justify-between items-center px-10 py-2 border-b-[1px] border-b-gray-700/50 border-b-solid">
+                <View className="flex flex-col pl-8">
+                  <Text className="text-gray-300 text-2xl font-bold mb-2">
+                    {group?.name}
+                  </Text>
+                  <Text className="text-gray-500 text-[20px] font-bold ">
+                    {group?.about}
+                  </Text>
+                </View>
+                {isAdmin === true && (
+                  <PrimaryButton
+                    classes="px-6 py-3 max-md:px-3 max-md:py-2 max-md:text-[14px] gap-2"
+                    event={() => {
+                      // setShowInviteForm(true);
+                    }}
+                  >
+                    {/* <HiUserAdd /> */}
+                    <Text className="text-gray-300"> Invite Members</Text>
+                  </PrimaryButton>
+                )}
+                {!group?.status && !group?.auto_approval && (
+                  <PrimaryButton classes="px-6 py-3 max-md:px-3 max-md:py-2 max-md:text-[14px]">
+                    <Text className="text-gray-300"> Request Join</Text>
+                  </PrimaryButton>
+                )}
+                {!group?.status && group?.auto_approval ? (
+                  <PrimaryButton
+                    classes="px-6 py-3 max-md:px-3 max-md:py-2 max-md:text-[14px]"
+                    event={() => {
+                      requestJoin();
+                    }}
+                  >
+                    <Text className="text-gray-300"> Join To Group</Text>
+                  </PrimaryButton>
+                ) : (
+                  <></>
+                )}
               </View>
               <View className="w-full flex flex-row gap-2 py-1 px-8">
                 <Pressable
@@ -521,7 +563,13 @@ const GroupProfile = () => {
                 className={`w-full h-fit flex flex-col gap-[8px] px-2 pb-8`}
               >
                 {members?.map((member, index) => (
-                  <GroupMemberCard member={member} group={group} key={index} />
+                  <GroupMemberCard
+                    setMembers={setMembers}
+                    member={member}
+                    group={group}
+                    key={index}
+                    isAdmin={isAdmin}
+                  />
                 ))}
               </View>
             )}
