@@ -1,38 +1,40 @@
 import { useEffect, useState } from "react";
 import { Switch, Text, TextInput, View } from "react-native";
+import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import CustomInput from "../Tools/CustomInput";
 import PrimaryButton from "../Tools/PrimaryButton";
-const EditGroupInfoForm = ({ group }) => {
+const EditGroupInfoForm = ({ group, setGroup }) => {
   const { setSuccessMessage, setErrors } = useMainContext();
   const [name, setName] = useState(group?.name);
   const [autoApproval, setAutoApproval] = useState(group?.auto_approval);
   const [about, setAbout] = useState(group?.bout);
   const [isLoading, setIsLoading] = useState(false);
   const UpdateData = () => {
-    // if (!!name && !!email) {
-    //   setIsLoading(true);
-    //   axiosClient
-    //     .patch("/profile", {
-    //       name: name,
-    //       email: email,
-    //     })
-    //     .then(({ data }) => {
-    //       setIsLoading(false);
-    //       setUser(data.user);
-    //       setSuccessMessage(data.message);
-    //     })
-    //     .catch((error) => {
-    //       setIsLoading(false);
-    //       setErrors([
-    //         error?.response?.data?.message || "Some Thing Went Wrong",
-    //       ]);
-    //     });
-    // }
+    if (!!name && !!about) {
+      setIsLoading(true);
+      axiosClient
+        .put(`/group/${group.slug}`, {
+          name: name,
+          auto_approval: autoApproval,
+          about: about,
+        })
+        .then(({ data }) => {
+          setIsLoading(false);
+          setGroup(data.group);
+          setSuccessMessage(data.message);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          setErrors([
+            error?.response?.data?.message || "Some Thing Went Wrong",
+          ]);
+        });
+    }
   };
   useEffect(() => {
     setName(group?.name);
-    setAutoApproval(group?.autoApproval);
+    setAutoApproval(group?.auto_approval);
     setAbout(group?.about);
   }, [group]);
 

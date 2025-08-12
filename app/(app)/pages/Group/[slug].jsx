@@ -612,7 +612,7 @@ const GroupProfile = () => {
                 )}
                 {tab == "about" && (
                   <View className="flex gap-2 pb-8 w-full">
-                    <EditGroupInfoForm group={group} />
+                    <EditGroupInfoForm group={group} setGroup={setGroup} />
                     <DeleteGroupForm group={group} />
                   </View>
                 )}
