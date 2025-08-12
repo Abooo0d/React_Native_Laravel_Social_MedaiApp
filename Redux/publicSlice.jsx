@@ -9,6 +9,11 @@ const publicSlice = createSlice({
     showFriendsForm: false,
   },
   reducers: {
+    closeAll: (state) => {
+      state.showFriendsForm = false;
+      state.showGroupsForm = false;
+      state.showNotificationsForm = false;
+    },
     toggleForm: (state, action) => {
       const form = action.payload;
       const isNotifications = form === "notifications";
@@ -23,7 +28,6 @@ const publicSlice = createSlice({
 
       state.showFriendsForm = isFriends ? !state.showFriendsForm : false;
     },
-
     setShowNotificationsForm: (state, action) => {
       state.showNotificationsForm = action.payload;
     },
@@ -41,5 +45,6 @@ export const {
   setShowGroupsForm,
   setShowFriendsForm,
   toggleForm,
+  closeAll,
 } = publicSlice.actions;
 export default publicSlice.reducer;

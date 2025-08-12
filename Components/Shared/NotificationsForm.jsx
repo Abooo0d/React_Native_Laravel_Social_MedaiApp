@@ -13,7 +13,7 @@ const NotificationsForm = () => {
   const { user } = useUserContext();
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const { data, refetch } = useGetNotifications(user);
+  const { data, refetch, isLoadingNotifications } = useGetNotifications(user);
   const showNotificationsForm = useSelector(
     (state) => state.public.showNotificationsForm,
   );
@@ -76,6 +76,11 @@ const NotificationsForm = () => {
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
       >
+        {isLoadingNotifications && (
+          <View className="w-full flex justify-center items-center">
+            <ActivityIndicator size="large" color="#6b7280" />
+          </View>
+        )}
         {data?.notifications?.length > 0 ? (
           <>
             {data?.notifications?.map((notify, index) => (

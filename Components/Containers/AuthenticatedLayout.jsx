@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axiosClient from "../../Axios/AxiosClient";
 import { useMainContext } from "../../Contexts/MainContext";
 import { useUserContext } from "../../Contexts/UserContext";
-import { toggleForm } from "../../Redux/publicSlice";
+import { closeAll, toggleForm } from "../../Redux/publicSlice";
 import { useGetNotifications } from "../../TanStackQurey/Querys";
 import FullPostCard from "../Cards/FullPostCard";
 import ImageFullView from "../Cards/ImageFullView";
@@ -71,7 +71,9 @@ const AuthenticatedLayout = () => {
   const CheckForUser = async () => {
     let t = await AsyncStorage.getItem("TOKEN");
     if (!t) router.replace("/login");
-    else getUser();
+    else {
+      getUser();
+    }
   };
   useEffect(() => {
     CheckForUser();
@@ -83,16 +85,19 @@ const AuthenticatedLayout = () => {
         className="w-full relative flex flex-row justify-end bg-gray-900 border-b-[1px] border-b-solid border-b-gray-700/50"
         style={{ height: headerHeight }}
       >
-        <View className="flex flex-row justify-between items-end flex-1 px-4 pt-4 mb-2">
-          <TouchableOpacity onPress={() => router.replace("/pages/Home")}>
+        <View className="flex flex-row justify-evenly items-end flex-1 px-4 pt-4 mb-2">
+          <TouchableOpacity
+            onPress={() => router.replace("/pages/Home")}
+            className="mx-2"
+          >
             <Image
               source={require("../../assets/images/Logo_2.png")}
-              className="w-[40px] h-[40px] ml-[10px] object-cover"
+              className="w-[40px] h-[40px] object-cover"
             />
           </TouchableOpacity>
           <View className="flex flex-row justify-evenly items-center flex-1 mx-4">
             <TouchableOpacity
-              className={`w-[40px] h-[40px] rounded-md flex justify-center items-center p-1 duration-200 border-[1px] border-solid ${
+              className={`w-[40px] h-[40px] rounded-md flex justify-center items-center p-1 duration-200 border-[1px] border-solid  ${
                 showGroupsForm
                   ? "bg-gray-700/500 border-gray-700/50"
                   : " bg-transparent border-transparent"
@@ -110,7 +115,7 @@ const AuthenticatedLayout = () => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className={`w-[40px] h-[40px] rounded-md flex justify-center items-center p-1 duration-200 border-[1px] border-solid ${
+              className={`w-[40px] h-[40px] rounded-md flex justify-center items-center p-1 duration-200 border-[1px] border-solid  ${
                 showFriendsForm
                   ? "bg-gray-700/500 border-gray-700/50"
                   : " bg-transparent border-transparent"
@@ -155,9 +160,10 @@ const AuthenticatedLayout = () => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              classname="w-[40px] h-[40px] rounded-md flex justify-center items-center"
+              className="w-[40px] h-[40px] rounded-md flex justify-center items-center"
               onPress={() => {
                 router.replace("/pages/Chats");
+                dispatch(closeAll());
               }}
             >
               <Text className="text-gray-300">
@@ -169,12 +175,12 @@ const AuthenticatedLayout = () => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              classname="w-[40px] h-[40px] rounded-md flex justify-center items-center"
+              className="w-[40px] h-[40px] rounded-md flex justify-center items-center "
               onPress={() => {
                 router.replace("/pages/Chats");
               }}
             >
-              <Text className="text-gray-300 font-black">AI</Text>
+              <Text className="text-gray-300 font-bold text-[20px]">AI</Text>
             </TouchableOpacity>
           </View>
           <AuthMenu show={showAuthMenu} setShow={setShowAuthMenu} />

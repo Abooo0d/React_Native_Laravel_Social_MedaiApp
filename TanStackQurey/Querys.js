@@ -47,7 +47,7 @@ export const useGetGroups = (user) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_GROUPS],
     queryFn: async () => {
-      if (!!!user) return Promise.resolve([]);
+      if (Object.keys(user).length <= 0) return Promise.resolve([]);
       return axiosClient
         .get("/get-groups")
         .then(({ data }) => {
@@ -59,7 +59,7 @@ export const useGetGroups = (user) => {
           ]);
         });
     },
-    enabled: !!user,
+    enabled: Object.keys(user).length <= 0,
   });
 };
 export const useGetChatGroups = () => {
@@ -96,13 +96,14 @@ export const useGetMoreMessages = (messageId) => {
         }),
   });
 };
-export const useGetPostsForGroup = (groupId) => {
+export const useGetPostsForGroup = (slug) => {
   const { setErrors } = useMainContext();
   return useQuery({
     queryKey: [QUERY_KEYS.GET_POSTS_FOR_GROUP],
-    queryFn: () =>
-      axiosClient
-        .get(route("postsForGroup", groupId))
+    queryFn: async () => {
+      if (!slug) return Promise.resolve([]);
+      return axiosClient
+        .get(`/group/getPosts/${slug}`)
         .then(({ data }) => {
           return data;
         })
@@ -110,7 +111,10 @@ export const useGetPostsForGroup = (groupId) => {
           setErrors([
             error?.response?.data?.message || "Some Thing Went Wrong",
           ]);
-        }),
+          return [];
+        });
+    },
+    enabled: !!slug,
   });
 };
 export const useGetPostsForUser = (username) => {
@@ -150,5 +154,26 @@ export const useGetUser = (username) => {
         });
     },
     enabled: !!username,
+  });
+};
+export const useGetGroup = (slug) => {
+  const { setErrors } = useMainContext();
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_GROUP],
+    queryFn: async () => {
+      if (!slug) return Promise.resolve({});
+      return axiosClient
+        .get(`/group/${slug}`)
+        .then(({ data }) => {
+          return data;
+        })
+        .catch((error) => {
+          setErrors([
+            error?.response?.data?.message || "Some Thing Went Wrong",
+          ]);
+          return {};
+        });
+    },
+    enabled: !!slug,
   });
 };

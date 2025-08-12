@@ -7,11 +7,12 @@ const FriendCard = ({ data, setShowFollowerContainer }) => {
     <Pressable
       onPress={() => {
         setShowFollowerContainer();
-        router.replace("/");
+        router.replace(`/pages/Profile/${data.username}`);
       }}
+      className="bg-red-500"
     >
       <View
-        className={`relative flex-1 min-h-[80px] w-full duration-200 rounded-[10px] `}
+        className={`relative flex-1 min-h-[80px] max-h-[80px] w-full duration-200 rounded-[10px]`}
         onPress={setShowFollowerContainer}
       >
         <Image

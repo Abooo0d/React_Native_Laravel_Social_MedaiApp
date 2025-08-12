@@ -46,7 +46,11 @@ const GroupsForm = () => {
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
       >
-        {isLoading && <ActivityIndicator size="large" color="#6b7280" />}
+        {isLoading && (
+          <View className="w-full flex justify-center items-center">
+            <ActivityIndicator size="large" color="#6b7280" />
+          </View>
+        )}
         {data?.groups?.length > 0 ? (
           <>
             {data?.groups?.map((group, index) => (

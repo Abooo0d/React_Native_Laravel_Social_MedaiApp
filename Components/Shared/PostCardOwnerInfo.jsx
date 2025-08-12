@@ -38,7 +38,9 @@ const PostCardOwnerInfo = ({ post }) => {
                     {" "}
                     <FontAwesome name="angle-right" size={20} />{" "}
                   </Text>
-                  <Link href={"/pages/Home"}>{post.group.name}</Link>
+                  <Link href={`/pages/Group/${post.group.slug}`}>
+                    {post.group.name}
+                  </Link>
                 </>
               )}
             </>

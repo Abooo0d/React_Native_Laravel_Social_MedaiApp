@@ -35,7 +35,7 @@ const AuthMenu = ({ show, setShow }) => {
     <>
       <TouchableOpacity
         onPress={() => setShow((prev) => !prev)}
-        className={`flex justify-center items-center w-[40px] h-[40px] duration-200`}
+        className={`flex justify-center items-center w-[40px] h-[40px] duration-200 mx-2`}
       >
         <Text className="text-gray-300 w-full h-full ">
           <Entypo size={44} className="text-gray-300 " name="menu" />

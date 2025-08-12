@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
+import { useGlobalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -8,45 +8,54 @@ import {
   Text,
   View,
 } from "react-native";
-import FriendUserCard from "../../../../Components/Cards/FriendUserCard";
+import GroupMemberCard from "../../../../Components/Cards/GroupMemberCard";
+import GroupRequestCard from "../../../../Components/Cards/GroupRequestCard";
 import PostCard from "../../../../Components/Cards/PostCard";
 import ProfileImageFullView from "../../../../Components/Cards/ProfileImageFullView";
+import DeleteGroupForm from "../../../../Components/Shared/DeleteGroupForm";
+import EditGroupInfoForm from "../../../../Components/Shared/EditGroupInfoForm";
 import PostLoader from "../../../../Components/Tools/PostLoader";
 import ProfileLoader from "../../../../Components/Tools/ProfileLoader";
 import {
-  useGetPostsForUser,
-  useGetUser,
+  useGetGroup,
+  useGetPostsForGroup,
 } from "../../../../TanStackQurey/Querys";
-const Profile = () => {
-  const { username } = useLocalSearchParams();
+
+const GroupProfile = () => {
+  const { slug } = useGlobalSearchParams();
+  const {
+    data: groupData,
+    isLoading,
+    refetch: refetchData,
+    error,
+  } = useGetGroup(slug);
+  const {
+    isLoading: isLoadingPosts,
+    data: postsData,
+    refetch: refetchPosts,
+  } = useGetPostsForGroup(slug);
+
   const [showImageFullView, setShowImageFullView] = useState(false);
   const [image, setImage] = useState({});
-  const [currentUser, setCurrentUser] = useState({});
-  const [isFriend, setIsFriend] = useState(false);
   const [photos, setPhotos] = useState([]);
   const [allData, setAllData] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
   const [tab, setTab] = useState("posts");
-
-  const { data: user, refetch, isLoading } = useGetUser(username);
-  const {
-    data: postsData,
-    isLoading: isLoadingPosts,
-    refetch: refetchPosts,
-  } = useGetPostsForUser(username);
-
-  useEffect(() => {
-    if (!!user) {
-      setCurrentUser(user.user);
-      setIsFriend(user.isFriend);
-    }
-  }, [user]);
-
+  const [group, setGroup] = useState({});
+  const [members, setMembers] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
     setAllData(postsData?.posts);
     setAllPosts(postsData?.posts?.data);
     setPhotos(postsData?.photos);
   }, [postsData]);
+  useEffect(() => {
+    setGroup(groupData?.group);
+    setMembers(groupData?.users);
+    setRequests(groupData?.requests);
+    setIsAdmin(groupData?.isAdmin);
+  }, [groupData]);
 
   return (
     <>
@@ -68,24 +77,21 @@ const Profile = () => {
           <ProfileLoader />
         ) : (
           <>
-            <View className="max-h-[345px] h-full w-full relative bg-gray-900">
+            <View className="max-h-[315px] h-full w-full relative bg-gray-900">
               <Image
-                className="w-full h-[200px] object-cover"
-                source={{ uri: currentUser?.cover_url }}
+                className="w-full h-[200px] object-cover "
+                source={{ uri: group?.cover_url }}
               />
               <Image
-                className="absolute top-[170px] left-[20px] w-[120px] h-[120px] rounded-full z-10"
-                source={{ uri: currentUser?.avatar_url }}
+                className="absolute top-[40px] left-[20px] w-[120px] h-[120px] rounded-full z-10"
+                source={{ uri: group?.thumbnail_url }}
               />
-              <View className="bg-gray-900 flex flex-col px-10 py-2 pl-[160px] border-b-[1px] border-b-gray-700/50 border-b-solid">
+              <View className="bg-gray-900 flex flex-col px-10 py-2 pl-8 border-b-[1px] border-b-gray-700/50 border-b-solid">
                 <Text className="text-gray-300 text-2xl font-bold mb-2">
-                  {currentUser.name}
+                  {group?.name}
                 </Text>
                 <Text className="text-gray-500 text-[20px] font-bold ">
-                  {currentUser.email}
-                </Text>
-                <Text className="text-gray-500 text-[20px] font-bold ">
-                  @{currentUser.username}
+                  {group?.about}
                 </Text>
               </View>
               <View className="w-full flex flex-row gap-2 py-1 px-8">
@@ -121,19 +127,53 @@ const Profile = () => {
                 </Pressable>
                 <Pressable
                   onPress={() => {
-                    setTab("friends");
+                    setTab("members");
                   }}
                 >
                   <View
                     className={`py-2 px-3 border-b-gray-700/50 border-b-solid border-b-[2px] ${
-                      tab == "friends"
+                      tab == "members"
                         ? "border-b-gray-700/50"
                         : "border-transparent"
                     }`}
                   >
-                    <Text className="text-gray-400">Friends</Text>
+                    <Text className="text-gray-400">Members</Text>
                   </View>
                 </Pressable>
+                {isAdmin && (
+                  <>
+                    <Pressable
+                      onPress={() => {
+                        setTab("requests");
+                      }}
+                    >
+                      <View
+                        className={`py-2 px-3 border-b-gray-700/50 border-b-solid border-b-[2px] ${
+                          tab == "requests"
+                            ? "border-b-gray-700/50"
+                            : "border-transparent"
+                        }`}
+                      >
+                        <Text className="text-gray-400">requests</Text>
+                      </View>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        setTab("about");
+                      }}
+                    >
+                      <View
+                        className={`py-2 px-3 border-b-gray-700/50 border-b-solid border-b-[2px] ${
+                          tab == "about"
+                            ? "border-b-gray-700/50"
+                            : "border-transparent"
+                        }`}
+                      >
+                        <Text className="text-gray-400">About</Text>
+                      </View>
+                    </Pressable>
+                  </>
+                )}
               </View>
             </View>
             {tab == "posts" && (
@@ -193,15 +233,6 @@ const Profile = () => {
                 )}
               </View>
             )}
-            {tab == "friends" && (
-              <View
-                className={`w-full h-fit flex flex-col gap-[8px] px-2 pb-8`}
-              >
-                {currentUser.friends?.map((friend, index) => (
-                  <FriendUserCard friend={friend} key={index} />
-                ))}
-              </View>
-            )}
             {tab == "photos" && (
               <View
                 className={`w-full h-fit flex flex-col gap-[8px] px-2 pb-8`}
@@ -223,6 +254,39 @@ const Profile = () => {
                 ))}
               </View>
             )}
+            {tab == "members" && (
+              <View
+                className={`w-full h-fit flex flex-col gap-[8px] px-2 pb-8`}
+              >
+                {members?.map((member, index) => (
+                  <GroupMemberCard member={member} group={group} key={index} />
+                ))}
+              </View>
+            )}
+            {isAdmin && (
+              <>
+                {tab == "requests" && (
+                  <View
+                    className={`w-full h-fit flex flex-col gap-[8px] px-2 pb-8`}
+                  >
+                    {requests?.map((request, index) => (
+                      <GroupRequestCard
+                        request={request}
+                        group={group}
+                        key={index}
+                        setRequestsData={setRequests}
+                      />
+                    ))}
+                  </View>
+                )}
+                {tab == "about" && (
+                  <View className="flex gap-2 pb-8 w-full">
+                    <EditGroupInfoForm group={group} />
+                    <DeleteGroupForm group={group} />
+                  </View>
+                )}
+              </>
+            )}
           </>
         )}
       </ScrollView>
@@ -235,4 +299,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default GroupProfile;
