@@ -18,6 +18,7 @@ import PostCard from "../../../../Components/Cards/PostCard";
 import ProfileImageFullView from "../../../../Components/Cards/ProfileImageFullView";
 import DeleteGroupForm from "../../../../Components/Shared/DeleteGroupForm";
 import EditGroupInfoForm from "../../../../Components/Shared/EditGroupInfoForm";
+import InviteUserForm from "../../../../Components/Shared/InviteUserForm";
 import PostLoader from "../../../../Components/Tools/PostLoader";
 import PrimaryButton from "../../../../Components/Tools/PrimaryButton";
 import ProfileLoader from "../../../../Components/Tools/ProfileLoader";
@@ -373,7 +374,7 @@ const GroupProfile = () => {
                   <PrimaryButton
                     classes="px-6 py-3 max-md:px-3 max-md:py-2 max-md:text-[14px] gap-2"
                     event={() => {
-                      // setShowInviteForm(true);
+                      setShowInviteForm(true);
                     }}
                   >
                     {/* <HiUserAdd /> */}
@@ -562,15 +563,25 @@ const GroupProfile = () => {
               <View
                 className={`w-full h-fit flex flex-col gap-[8px] px-2 pb-8`}
               >
-                {members?.map((member, index) => (
-                  <GroupMemberCard
-                    setMembers={setMembers}
-                    member={member}
-                    group={group}
-                    key={index}
-                    isAdmin={isAdmin}
-                  />
-                ))}
+                {members.length > 0 ? (
+                  <>
+                    {members?.map((member, index) => (
+                      <GroupMemberCard
+                        setMembers={setMembers}
+                        member={member}
+                        group={group}
+                        key={index}
+                        isAdmin={isAdmin}
+                      />
+                    ))}
+                  </>
+                ) : (
+                  <View className="w-full py-4  px-4">
+                    <Text className="text-gray-600 text-center">
+                      There is No Members In This Group
+                    </Text>
+                  </View>
+                )}
               </View>
             )}
             {isAdmin && (
@@ -579,14 +590,24 @@ const GroupProfile = () => {
                   <View
                     className={`w-full h-fit flex flex-col gap-[8px] px-2 pb-8`}
                   >
-                    {requests?.map((request, index) => (
-                      <GroupRequestCard
-                        request={request}
-                        group={group}
-                        key={index}
-                        setRequestsData={setRequests}
-                      />
-                    ))}
+                    {requests.length > 0 ? (
+                      <>
+                        {requests?.map((request, index) => (
+                          <GroupRequestCard
+                            refetch={refetchData}
+                            request={request}
+                            group={group}
+                            key={index}
+                          />
+                        ))}
+                      </>
+                    ) : (
+                      <View className="w-full py-4  px-4">
+                        <Text className="text-gray-600 text-center">
+                          There is No New Requests To This Group
+                        </Text>
+                      </View>
+                    )}
                   </View>
                 )}
                 {tab == "about" && (
@@ -600,6 +621,11 @@ const GroupProfile = () => {
           </>
         )}
       </ScrollView>
+      <InviteUserForm
+        showForm={showInviteForm}
+        setShowForm={setShowInviteForm}
+        group={group}
+      />
       <ProfileImageFullView
         showImage={showImageFullView}
         setShowImage={setShowImageFullView}

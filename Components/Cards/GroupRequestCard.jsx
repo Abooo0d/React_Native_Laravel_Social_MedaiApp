@@ -1,26 +1,31 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useMainContext } from "../../Contexts/MainContext";
-
-const GroupRequestCard = ({ request, group, setRequestsData }) => {
+import axiosClient from "./../../Axios/AxiosClient";
+const GroupRequestCard = ({ request, group, refetch }) => {
   const { setSuccessMessage, setErrors } = useMainContext();
   const approve = () => {
-    // axiosClient
-    //   .post(route("group.approveRequest", group), { user_id: request.id })
-    //   .then((data) => {
-    //     setSuccessMessage(data.data.message);
-    //     setRequestsData((prev) => prev.filter((req) => req.id !== request.id));
-    //   });
+    console.log("Approve");
+    axiosClient
+      .post(`/group/approve/${group.slug}`, { user_id: request.id })
+      .then((data) => {
+        setSuccessMessage(data.data.message);
+        refetch();
+        // setRequestsData((prev) => prev.filter((req) => req.id !== request.id));
+      })
+      .catch((error) => {
+        setErrors([error?.response?.data?.message || "Some Thing Went Wrong"]);
+      });
   };
   const reject = () => {
-    // axiosClient
-    //   .post(route("group.rejectRequest", group), { user_id: request.id })
-    //   .then((data) => {
-    //     setSuccessMessage(data.data.message);
-    //     setRequestsData((prev) => prev.filter((req) => req.id !== request.id));
-    //   })
-    //   .catch((data) => {
-    //     setErrors([data.data.message]);
-    //   });
+    axiosClient
+      .post(`/group/reject/${group.slug}`, { user_id: request.id })
+      .then((data) => {
+        setSuccessMessage(data.data.message);
+        refetch();
+      })
+      .catch((data) => {
+        setErrors([data.data.message]);
+      });
   };
   return (
     <View className="group relative min-w-[300px] bg-gray-700/30 backdrop-blur-sm rounded-[8px] border-[1px] border-solid border-gray-500/50 flex flex-col justify-between items-center cursor-pointer duration-200 hover:bg-gray-600/50 hover:border-gray-500 overflow-hidden drop-shadow-2xl">
@@ -51,7 +56,7 @@ const GroupRequestCard = ({ request, group, setRequestsData }) => {
         <View className="flex flex-row gap-2 justify-center items-center">
           <TouchableOpacity
             className="py-[5px] px-[5px] bg-emerald-500/40 hover:bg-emerald-600/90 border-[1px] border-solid border-emerald-400 text-gray-300 rounded-md text-[12px] duration-200 "
-            OnPress={() => approve()}
+            onPress={() => approve()}
           >
             <Text className="text-gray-300">Approve</Text>
           </TouchableOpacity>
