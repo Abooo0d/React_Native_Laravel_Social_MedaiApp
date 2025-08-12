@@ -1,3 +1,4 @@
+import { AntDesign, Feather, FontAwesome6 } from "@expo/vector-icons";
 import { useGlobalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -6,8 +7,11 @@ import {
   Pressable,
   ScrollView,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
+import { launchImageLibrary } from "react-native-image-picker";
+import axiosClient from "../../../../Axios/AxiosClient";
 import GroupMemberCard from "../../../../Components/Cards/GroupMemberCard";
 import GroupRequestCard from "../../../../Components/Cards/GroupRequestCard";
 import PostCard from "../../../../Components/Cards/PostCard";
@@ -16,6 +20,7 @@ import DeleteGroupForm from "../../../../Components/Shared/DeleteGroupForm";
 import EditGroupInfoForm from "../../../../Components/Shared/EditGroupInfoForm";
 import PostLoader from "../../../../Components/Tools/PostLoader";
 import ProfileLoader from "../../../../Components/Tools/ProfileLoader";
+import { useMainContext } from "../../../../Contexts/MainContext";
 import {
   useGetGroup,
   useGetPostsForGroup,
@@ -34,7 +39,7 @@ const GroupProfile = () => {
     data: postsData,
     refetch: refetchPosts,
   } = useGetPostsForGroup(slug);
-
+  const { setSuccessMessage, setErrors } = useMainContext();
   const [showImageFullView, setShowImageFullView] = useState(false);
   const [image, setImage] = useState({});
   const [photos, setPhotos] = useState([]);
@@ -45,6 +50,122 @@ const GroupProfile = () => {
   const [members, setMembers] = useState([]);
   const [requests, setRequests] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoadingCoverImage, setIsLoadingCoverImage] = useState(false);
+  const [isLoadingAvatarImage, setIsLoadingAvatarImage] = useState(false);
+  const [showCoverOptions, setShowCoverOptions] = useState(false);
+  const [showAvatarOptions, setShowAvatarOptions] = useState(false);
+  const [coverImage, setCoverImage] = useState({});
+  const [thumbnailImage, setThumbnailImage] = useState({});
+  const [isTheCoverChanged, setIsTheCoverChanged] = useState(false);
+  const [isThumbnailChanged, setIsThumbnailChanged] = useState(false);
+
+  const changeCoverImage = () => {
+    launchImageLibrary(
+      { mediaType: "photo", selectionLimit: 1 },
+      (response) => {
+        if (response.didCancel) return;
+        else if (response.errorCode) return;
+        else {
+          let file = response.assets;
+          setCoverImage(file[0]);
+          setIsTheCoverChanged(true);
+        }
+      },
+    );
+  };
+  const resetCoverImage = () => {
+    setCoverImage("");
+    setIsTheCoverChanged(false);
+  };
+  const submitCoverImage = () => {
+    try {
+      setIsLoadingCoverImage(true);
+      if (!isTheCoverChanged) return;
+      const formData = new FormData();
+      console.log(group.id);
+
+      formData.append("group_id", group.id);
+      formData.append("coverImage", {
+        uri: coverImage.uri,
+        name: coverImage.fileName || `file_${index}.jpg`,
+        type: coverImage.type || "image/jpeg",
+      });
+      axiosClient
+        .post("/group/change_images", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(({ data }) => {
+          setSuccessMessage(data.message);
+          setGroup(data.group);
+          setCoverImage({});
+          setIsTheCoverChanged(false);
+          setShowCoverOptions(false);
+          setIsLoadingCoverImage(false);
+        })
+        .catch((err) => {
+          setErrors([err?.response?.data?.message || "Some Thing Went Wrong"]);
+          setIsLoadingCoverImage(false);
+        });
+    } catch (error) {
+      setErrors([err?.response?.data?.message || "Some Thing Went Wrong"]);
+      setIsLoadingCoverImage(false);
+    }
+  };
+  const changeAvatarImage = () => {
+    launchImageLibrary(
+      { mediaType: "photo", selectionLimit: 1 },
+      (response) => {
+        if (response.didCancel) return;
+        else if (response.errorCode) return;
+        else {
+          let file = response.assets;
+          setThumbnailImage(file[0]);
+          setIsThumbnailChanged(true);
+        }
+      },
+    );
+  };
+  const resetAvatarImage = () => {
+    setThumbnailImage("");
+    setIsThumbnailChanged(false);
+  };
+  const submitAvatarImage = () => {
+    try {
+      setIsLoadingAvatarImage(true);
+      if (!isThumbnailChanged) return;
+      const formData = new FormData();
+      formData.append("group_id", group.id);
+      console.log(group.id);
+      formData.append("avatarImage", {
+        uri: thumbnailImage.uri,
+        name: thumbnailImage.fileName || `file_${index}.jpg`,
+        type: thumbnailImage.type || "image/jpeg",
+      });
+      axiosClient
+        .post("/group/change_images", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(({ data }) => {
+          setSuccessMessage(data.message);
+          setGroup(data.group);
+          setThumbnailImage({});
+          setIsThumbnailChanged(false);
+          setShowAvatarOptions(false);
+          setIsLoadingAvatarImage(false);
+        })
+        .catch((err) => {
+          setErrors([err?.response?.data?.message || "Some Thing Went Wrong"]);
+          setIsLoadingAvatarImage(false);
+        });
+    } catch (error) {
+      setErrors([err?.response?.data?.message || "Some Thing Went Wrong"]);
+      setIsLoadingAvatarImage(false);
+    }
+  };
   useEffect(() => {
     setAllData(postsData?.posts);
     setAllPosts(postsData?.posts?.data);
@@ -78,14 +199,155 @@ const GroupProfile = () => {
         ) : (
           <>
             <View className="max-h-[315px] h-full w-full relative bg-gray-900">
-              <Image
-                className="w-full h-[200px] object-cover "
-                source={{ uri: group?.cover_url }}
-              />
-              <Image
+              <Pressable
+                className="w-full h-[200px] relative"
+                onPress={() => {
+                  setShowCoverOptions((Prev) => !Prev);
+                }}
+              >
+                {isAdmin && (
+                  <>
+                    {showCoverOptions && (
+                      <>
+                        {isLoadingCoverImage ? (
+                          <ActivityIndicator
+                            size="large"
+                            color="#6b7280"
+                            className="absolute top-[10px] right-[10px] z-10 "
+                          />
+                        ) : (
+                          <View className="absolute top-[10px] right-[10px] z-10 flex flex-row justify-start items-center gap-2">
+                            {isTheCoverChanged ? (
+                              <>
+                                <TouchableOpacity
+                                  className="w-[90px] bg-gray-900 rounded-md px-4 py-2 flex flex-row gap-2"
+                                  onPress={() => resetCoverImage()}
+                                >
+                                  <Text className="text-gray-400">
+                                    <FontAwesome6 name="xmark" size={20} />
+                                  </Text>
+                                  <Text className="text-[16px] font-semibold text-gray-400 ">
+                                    Cancel
+                                  </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  className="w-[90px] bg-gray-100 rounded-md px-4 py-2 flex flex-row gap-2"
+                                  onPress={() => {
+                                    submitCoverImage();
+                                  }}
+                                >
+                                  <Text className="text-gray-900">
+                                    <AntDesign name="check" size={20} />
+                                  </Text>
+                                  <Text className="text-[16px] font-semibold text-gray-900">
+                                    submit
+                                  </Text>
+                                </TouchableOpacity>
+                              </>
+                            ) : (
+                              <TouchableOpacity
+                                className="w-[170px] bg-gray-100 rounded-md px-4 py-2 flex flex-row gap-2"
+                                onPress={() => {
+                                  changeCoverImage();
+                                }}
+                              >
+                                <Text className="text-gray-950">
+                                  <Feather
+                                    name="camera"
+                                    size={20}
+                                    color="black"
+                                  />
+                                </Text>
+                                <Text className="text-[16px] font-semibold text-gray-950">
+                                  Change Cover Image
+                                </Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
+                <Image
+                  className="w-full h-[200px] object-cover "
+                  source={{
+                    uri: isTheCoverChanged ? coverImage?.uri : group?.cover_url,
+                  }}
+                />
+              </Pressable>
+              <Pressable
                 className="absolute top-[40px] left-[20px] w-[120px] h-[120px] rounded-full z-10"
-                source={{ uri: group?.thumbnail_url }}
-              />
+                onPress={() => {
+                  setShowAvatarOptions((prev) => !prev);
+                }}
+              >
+                {isAdmin && (
+                  <>
+                    {showAvatarOptions && (
+                      <>
+                        {isLoadingAvatarImage ? (
+                          <ActivityIndicator
+                            size="large"
+                            color="#6b7280"
+                            className="absolute z-10 w-[120px] h-[120px] flex justify-center items-center"
+                          />
+                        ) : (
+                          <View className="absolute w-[120px] h-[120px] z-10 flex flex-row justify-center items-center gap-2">
+                            {isThumbnailChanged ? (
+                              <>
+                                <TouchableOpacity
+                                  className="w-[40px] bg-gray-900 rounded-md px-4 py-2 flex flex-row gap-2"
+                                  onPress={() => {
+                                    resetAvatarImage();
+                                  }}
+                                >
+                                  <Text className="text-gray-100">
+                                    <FontAwesome6 name="xmark" size={20} />
+                                  </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  className="w-[40px] bg-gray-100 rounded-md px-4 py-2 flex flex-row gap-2"
+                                  onPress={() => {
+                                    submitAvatarImage();
+                                  }}
+                                >
+                                  <Text className="text-gray-900">
+                                    <AntDesign name="check" size={20} />
+                                  </Text>
+                                </TouchableOpacity>
+                              </>
+                            ) : (
+                              <TouchableOpacity
+                                className="w-[40px] bg-gray-100 rounded-md px-2 py-2 flex flex-row gap-2 justify-center items-center"
+                                onPress={() => {
+                                  changeAvatarImage();
+                                }}
+                              >
+                                <Text className="text-gray-950">
+                                  <Feather
+                                    name="camera"
+                                    size={20}
+                                    color="black"
+                                  />
+                                </Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
+                <Image
+                  className=" w-[120px] h-[120px] rounded-full"
+                  source={{
+                    uri: isThumbnailChanged
+                      ? thumbnailImage?.uri
+                      : group?.thumbnail_url,
+                  }}
+                />
+              </Pressable>
               <View className="bg-gray-900 flex flex-col px-10 py-2 pl-8 border-b-[1px] border-b-gray-700/50 border-b-solid">
                 <Text className="text-gray-300 text-2xl font-bold mb-2">
                   {group?.name}
